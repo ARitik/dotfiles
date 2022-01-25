@@ -12,7 +12,7 @@ set cursorline
 set title 
 set incsearch
 set smartcase 
-set scrolloff=1
+set scrolloff=8
 set confirm
 
 call plug#begin()
@@ -25,7 +25,6 @@ Plug 'https://github.com/tpope/vim-commentary' "Vim Commenting
 Plug 'http://github.com/tpope/vim-surround' " Surrounding ysw)
 Plug 'https://github.com/preservim/tagbar' " Tagbar for code navigation
 Plug 'neovim/nvim-lspconfig'
-Plug 'neoclide/coc.nvim', {'branch': 'release'} " COC NVIM
 Plug 'jiangmiao/auto-pairs' " Auto close brackets
 Plug 'mlaursen/vim-react-snippets' " React Snippets 
 
@@ -42,4 +41,3 @@ let g:NERDTreeDirArrowCollapsible="~"
 colorscheme gruvbox
 
 
-source $HOME/.config/nvim/plug-config/coc.vim
