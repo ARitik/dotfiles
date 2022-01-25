@@ -23,6 +23,7 @@ Plug 'https://github.com/preservim/tagbar' " Tagbar for code navigation
 Plug 'neovim/nvim-lspconfig'
 Plug 'neoclide/coc.nvim', {'branch': 'release'} " COC NVIM
 Plug 'jiangmiao/auto-pairs' " Auto close brackets
+Plug 'mlaursen/vim-react-snippets' " React Snippets 
 
 call plug#end()
 
