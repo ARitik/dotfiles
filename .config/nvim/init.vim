@@ -1,15 +1,19 @@
-:set number
-:set relativenumber
-:set nu
-:set autoindent
-:set tabstop=4
-:set shiftwidth=4
-:set smarttab
-:set softtabstop=4
-:set mouse=a
-:set completeopt=noinsert,menuone,noselect
-:set cursorline
-:set title 
+set number
+set relativenumber
+set nu
+set autoindent
+set tabstop=4
+set shiftwidth=4
+set smarttab
+set softtabstop=4
+set mouse=a
+set completeopt=noinsert,menuone,noselect
+set cursorline
+set title 
+set incsearch
+set smartcase 
+set scrolloff=1
+set confirm
 
 call plug#begin()
 
@@ -35,7 +39,7 @@ nnoremap <C-t> :NERDTreeToggle<CR>
 let g:NERDTreeDirArrowExpandable="+"
 let g:NERDTreeDirArrowCollapsible="~"
 
-:colorscheme gruvbox
+colorscheme gruvbox
 
 
 source $HOME/.config/nvim/plug-config/coc.vim
