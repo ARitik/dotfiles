@@ -1,3 +1,9 @@
+local status_ok, lualine = pcall(require, "lualine")
+if not status_ok then
+  return
+end
+
+
 require('lualine').setup {
   options = {
     icons_enabled = true,
@@ -23,6 +29,13 @@ require('lualine').setup {
     lualine_y = {},
     lualine_z = {}
   },
-  tabline = {},
+  tabline = {
+  lualine_a = {'buffers'},
+  lualine_b = {'branch'},
+  lualine_c = {'filename'},
+  lualine_x = {},
+  lualine_y = {},
+  lualine_z = {'tabs'}
+  },
   extensions = {}
 }

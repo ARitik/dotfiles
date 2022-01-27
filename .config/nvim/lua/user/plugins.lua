@@ -50,6 +50,8 @@ return packer.startup(function(use)
   'nvim-lualine/lualine.nvim',
   requires = { 'kyazdani42/nvim-web-devicons', opt = true } -- Status bar written in Lua
 }
+  use 'kyazdani42/nvim-tree.lua' --Tree Explorer
+  use "numToStr/Comment.nvim" -- Easily comment stuff
 
 -- cmp plugins
   use "hrsh7th/nvim-cmp" -- The completion plugin
@@ -77,6 +79,8 @@ return packer.startup(function(use)
     "nvim-treesitter/nvim-treesitter",
     run = ":TSUpdate",
   }
+
+ use 'JoosepAlviste/nvim-ts-context-commentstring'
   -- Automatically set up your configuration after cloning packer.nvim
   -- Put this at the end after all plugins
   if PACKER_BOOTSTRAP then
