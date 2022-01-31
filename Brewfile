@@ -21,5 +21,3 @@ brew "tree"
 # GPU-accelerated terminal emulator
 cask "alacritty"
 cask "git-credential-manager-core"
-# GPU-based terminal emulator
-cask "kitty"
