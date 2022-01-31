@@ -12,8 +12,14 @@ brew "neovim"
 brew "node"
 # Manage multiple Node.js versions
 brew "nvm"
+# Search tool like grep and The Silver Searcher
+brew "ripgrep"
 # Terminal multiplexer
 brew "tmux"
 # Display directories as trees (with optional color/HTML output)
 brew "tree"
+# GPU-accelerated terminal emulator
+cask "alacritty"
 cask "git-credential-manager-core"
+# GPU-based terminal emulator
+cask "kitty"
