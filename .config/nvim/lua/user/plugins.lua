@@ -52,6 +52,7 @@ return packer.startup(function(use)
 }
   use 'kyazdani42/nvim-tree.lua' --Tree Explorer
   use "numToStr/Comment.nvim" -- Easily comment stuff
+  use "goolord/alpha-nvim"  -- Neovim start screen
 
 -- cmp plugins
   use "hrsh7th/nvim-cmp" -- The completion plugin

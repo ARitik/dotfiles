@@ -37,6 +37,10 @@ keymap("v", ">", ">gv", opts)
 -- Do not override register when pasting
 keymap("v", "p", '"_dP', opts)
 
+-- Insert --
+-- Press jk fast to enter
+keymap("i", "jk", "<ESC>", opts)
+
 -- Visual Block --
 -- Move text up and down
 keymap("x", "J", ":move '>+1<CR>gv-gv", opts)
