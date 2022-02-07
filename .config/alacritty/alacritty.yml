@@ -1,21 +1,50 @@
+env:
+  # TERM variable
+  #
+  # This value is used to set the `$TERM` environment variable for
+  # each instance of Alacritty. If it is not present, alacritty will
+  # check the local terminfo database and use `alacritty` if it is
+  # available, otherwise `xterm-256color` is used.
+  TERM: xterm-256color
+
+window:
+  padding:
+    x: 20
+    y: 2
+  dynamic_title: true
+  # Spread additional padding evenly around the terminal content.
+  dynamic_padding: false
+
+  # Window decorations
+  #
+  # Values for `decorations`:
+  #     - full: Borders and title bar
+  #     - none: Neither borders nor title bar
+  #
+  # Values for `decorations` (macOS only):
+  #     - transparent: Title bar, transparent background and title bar buttons
+  #     - buttonless: Title bar, transparent background, but no title bar buttons
+  # MacOS:
+  # decorations: transparent
+
 font:
   normal:
-    family: MesloLGS NF
+    family: JetBrainsMono NF 
     style: Regular
 
   bold:
-    family: MesloLGS NF
+    family: JetBrainsMono NF 
     style: Bold
 
   italic:
-    family: MesloLGS NF
+    family: JetBrainsMono NF 
     style: Italic
 
   bold_italic:
-    family: MesloLGS NF
+    family: JetBrainsMono NF 
     style: Bold Italic
 
-  size: 15
+  size: 16
 
   ligatures: true
 
@@ -39,16 +68,10 @@ cursor:
     #   - Always: Force the cursor to always blink
     blinking: Always
 
-window:
-  padding:
-    x: 2
-    y: 2
-  dynamic_title: true
-
 colors:
   # Default colors
   primary:
-    background: '#1b1c1e'
+    background: '#232326'
     foreground: '#abb2bf'
 
   # Normal colors
@@ -57,9 +80,9 @@ colors:
     # black text on the background.
     black: '#282c34'
     red: '#e06c75'
-    green: '#98c379'
+    green: '#a1e670'
     yellow: '#d19a66'
-    blue: '#4e89ba'
+    blue: '#299eff'
     magenta: '#c678dd'
     cyan: '#56b6c2'
     white: '#abb2bf'
@@ -68,13 +91,12 @@ colors:
   bright:
     black: '#5c6370'
     red: '#e06c75'
-    green: '#98c379'
+    green: '#a1e670'
     yellow: '#d19a66'
     blue: '#4e89ba'
     magenta: '#c678dd'
     cyan: '#56b6c2'
     white: '#ffffff'
-
 
 key_bindings:
   - { key: V, mods: Control|Shift, action: Paste }

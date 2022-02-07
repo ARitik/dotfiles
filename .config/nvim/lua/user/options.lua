@@ -7,7 +7,8 @@ local options = {
   completeopt = { "menuone", "noselect" }, -- mostly just for cmp
   conceallevel = 0,                        -- so that `` is visible in markdown files
   fileencoding = "utf-8",                  -- the encoding written to a file
-  hlsearch = true,                         -- highlight all matches on previous search pattern
+  incsearch = true,                         -- highlight all matches on previous search pattern
+  hlsearch = false,
   ignorecase = true,                       -- ignore case in search patterns
   mouse = "a",                             -- allow the mouse to be used inneovim
   pumheight = 10,                          -- pop up menu height
@@ -34,7 +35,8 @@ local options = {
   wrap = false,                            -- display lines as one long line
   scrolloff = 8,
   sidescrolloff = 8,
-} 
+}
+
 vim.opt.shortmess:append "c"
 
 for k,v in pairs(options) do

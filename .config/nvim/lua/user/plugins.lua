@@ -55,6 +55,8 @@ return packer.startup(function(use)
   use "numToStr/Comment.nvim" -- Easily comment stuff
   use "goolord/alpha-nvim"  -- Neovim start screen
   use 'norcalli/nvim-colorizer.lua' -- Neovim Colorizer
+  use {"akinsho/toggleterm.nvim"} -- Toggle Term
+  use "lukas-reineke/indent-blankline.nvim" -- Indent Line
 
 -- cmp plugins
   use "hrsh7th/nvim-cmp" -- The completion plugin
