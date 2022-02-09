@@ -9,7 +9,7 @@ env:
 
 window:
   padding:
-    x: 20
+    x: 2
     y: 2
   dynamic_title: true
   # Spread additional padding evenly around the terminal content.

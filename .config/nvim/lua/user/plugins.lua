@@ -55,6 +55,7 @@ return packer.startup(function(use)
   use 'norcalli/nvim-colorizer.lua' -- Neovim Colorizer
   use "akinsho/toggleterm.nvim" -- Toggle Term
   use "lukas-reineke/indent-blankline.nvim" -- Indent Line
+  use "akinsho/bufferline.nvim" -- Bufferline
 
   -- Themes
   use 'navarasu/onedark.nvim' -- One Dark
