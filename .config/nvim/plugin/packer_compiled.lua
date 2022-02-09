@@ -119,11 +119,6 @@ _G.packer_plugins = {
     path = "/Users/aritik/.local/share/nvim/site/pack/packer/start/friendly-snippets",
     url = "https://github.com/rafamadriz/friendly-snippets"
   },
-  gruvbox = {
-    loaded = true,
-    path = "/Users/aritik/.local/share/nvim/site/pack/packer/start/gruvbox",
-    url = "https://github.com/morhetz/gruvbox"
-  },
   ["indent-blankline.nvim"] = {
     loaded = true,
     path = "/Users/aritik/.local/share/nvim/site/pack/packer/start/indent-blankline.nvim",

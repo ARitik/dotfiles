@@ -43,20 +43,21 @@ return packer.startup(function(use)
   -- My plugins here
   use "wbthomason/packer.nvim" -- Have packer manage itself
   use "nvim-lua/popup.nvim" -- An implementation of the Popup API from vim in Neovim
-  use "nvim-lua/plenary.nvim" -- Useful lua functions used ny lots of plugins
-  use "morhetz/gruvbox" -- Gruvbox Material dark
-  use 'navarasu/onedark.nvim' -- One Dark
+  use "nvim-lua/plenary.nvim" -- Useful lua functions used in lots of plugins
   use "windwp/nvim-autopairs" -- Autopairs, integrates with both cmp and treesitter
   use {
   'nvim-lualine/lualine.nvim',
   requires = { 'kyazdani42/nvim-web-devicons', opt = true } -- Status bar written in Lua
-}
+  }
   use 'kyazdani42/nvim-tree.lua' --Tree Explorer
   use "numToStr/Comment.nvim" -- Easily comment stuff
   use "goolord/alpha-nvim"  -- Neovim start screen
   use 'norcalli/nvim-colorizer.lua' -- Neovim Colorizer
-  use {"akinsho/toggleterm.nvim"} -- Toggle Term
+  use "akinsho/toggleterm.nvim" -- Toggle Term
   use "lukas-reineke/indent-blankline.nvim" -- Indent Line
+
+  -- Themes
+  use 'navarasu/onedark.nvim' -- One Dark
 
 -- cmp plugins
   use "hrsh7th/nvim-cmp" -- The completion plugin
@@ -79,7 +80,7 @@ return packer.startup(function(use)
   use "nvim-telescope/telescope.nvim"
   use 'nvim-telescope/telescope-media-files.nvim'
 
-    -- Treesitter
+  -- Treesitter
   use {
     "nvim-treesitter/nvim-treesitter",
     run = ":TSUpdate",

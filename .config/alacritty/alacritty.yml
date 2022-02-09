@@ -14,7 +14,6 @@ window:
   dynamic_title: true
   # Spread additional padding evenly around the terminal content.
   dynamic_padding: false
-
   # Window decorations
   #
   # Values for `decorations`:
@@ -29,19 +28,19 @@ window:
 
 font:
   normal:
-    family: JetBrainsMono NF 
+    family: JetBrainsMono NF
     style: Regular
 
   bold:
-    family: JetBrainsMono NF 
+    family: JetBrainsMono NF
     style: Bold
 
   italic:
-    family: JetBrainsMono NF 
+    family: JetBrainsMono NF
     style: Italic
 
   bold_italic:
-    family: JetBrainsMono NF 
+    family: JetBrainsMono NF
     style: Bold Italic
 
   size: 16
@@ -97,6 +96,7 @@ colors:
     magenta: '#c678dd'
     cyan: '#56b6c2'
     white: '#ffffff'
+
 
 key_bindings:
   - { key: V, mods: Control|Shift, action: Paste }

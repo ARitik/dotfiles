@@ -4,7 +4,7 @@ if not status_ok then
 end
 
 
-require('lualine').setup {
+lualine.setup {
   options = {
     icons_enabled = true,
     theme = 'onedark',
@@ -29,5 +29,13 @@ require('lualine').setup {
     lualine_y = {},
     lualine_z = {}
   },
+  tabline = {
+  lualine_a = {'buffers'},
+  lualine_b = {'branch'},
+  lualine_c = {''},
+  lualine_x = {},
+  lualine_y = {},
+  lualine_z = {'tabs'}
+},
   extensions = {}
 }
