@@ -4,6 +4,10 @@ tap "homebrew/core"
 tap "microsoft/git"
 # Reimplementation of ctags(1)
 brew "ctags"
+# Modern replacement for 'ls'
+brew "exa"
+# User-friendly command-line shell for UNIX-like operating systems
+brew "fish"
 # Distributed revision control system
 brew "git"
 # Ambitious Vim-fork focused on extensibility and agility
@@ -14,10 +18,11 @@ brew "node"
 brew "nvm"
 # Search tool like grep and The Silver Searcher
 brew "ripgrep"
+# Cross-shell prompt for astronauts
+brew "starship"
 # Terminal multiplexer
 brew "tmux"
-# Display directories as trees (with optional color/HTML output)
-brew "tree"
 # GPU-accelerated terminal emulator
 cask "alacritty"
-cask "git-credential-manager-core"
+# Move and resize windows using keyboard shortcuts or snap areas
+cask "rectangle"

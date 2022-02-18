@@ -26,7 +26,7 @@ window:
   #     - transparent: Title bar, transparent background and title bar buttons
   #     - buttonless: Title bar, transparent background, but no title bar buttons
   # MacOS:
-  decorations: none
+  decorations: buttonless
 
 font:
   normal:
@@ -69,7 +69,6 @@ cursor:
     #   - Always: Force the cursor to always blink
     blinking: Always
 
-
 # Nightfox Alacritty Colors
 # Style: nordfox
 # Upstream: https://github.com/edeneast/nightfox.nvim/raw/main/extra/nordfox/nightfox_alacritty.yml
@@ -101,7 +100,6 @@ colors:
   indexed_colors:
     - { index: 16, color: '0xc9826b' }
     - { index: 17, color: '0xbf88bc' }
-  
 
 key_bindings:
   - { key: V, mods: Control|Shift, action: Paste }
@@ -109,3 +107,4 @@ key_bindings:
   - { key: Key0, mods: Control, action: ResetFontSize }
   - { key: Equals, mods: Control, action: IncreaseFontSize }
   - { key: Minus, mods: Control, action: DecreaseFontSize }
+theme: nordfox
