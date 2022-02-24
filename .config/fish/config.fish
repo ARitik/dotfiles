@@ -3,6 +3,8 @@ if status is-interactive
 end
 
 # Aliases
+alias cat='bat'
+alias man='tldr'
 alias nv='nvim'
 alias nvrc='nvim ~/.config/nvim'
 alias fishrc='nvim ~/.config/fish'
