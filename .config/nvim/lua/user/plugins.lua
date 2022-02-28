@@ -58,7 +58,7 @@ return packer.startup(function(use)
   use "akinsho/bufferline.nvim" -- Bufferline
 
   -- Themes
-  use 'EdenEast/nightfox.nvim' -- Night Fox
+  use 'ful1e5/onedark.nvim' -- One Dark
 
 -- cmp plugins
   use "hrsh7th/nvim-cmp" -- The completion plugin

@@ -3,6 +3,10 @@ if status is-interactive
 end
 
 # Aliases
+alias ls='exa --icons'
+alias ll='exa -l -g --icons'
+alias lll='exa -la'
+alias tree='exa --tree --icons --level=3'
 alias cat='bat'
 alias man='tldr'
 alias nv='nvim'
