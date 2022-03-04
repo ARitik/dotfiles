@@ -2,7 +2,6 @@ tap "homebrew/bundle"
 tap "homebrew/cask"
 tap "homebrew/core"
 tap "homebrew/services"
-tap "koekeishiya/formulae"
 tap "microsoft/git"
 # Clone of cat(1) with syntax highlighting and Git integration
 brew "bat"
@@ -24,17 +23,21 @@ brew "node"
 brew "nvm"
 # Search tool like grep and The Silver Searcher
 brew "ripgrep"
+# Command-line interface for SQLite
+brew "sqlite"
 # Cross-shell prompt for astronauts
 brew "starship"
 # Simplified and community-driven man pages
 brew "tldr"
 # Terminal multiplexer
 brew "tmux"
-# Simple hotkey-daemon for macOS.
-brew "koekeishiya/formulae/skhd"
 # GPU-accelerated terminal emulator
 cask "alacritty"
 # Automatic tiling window manager similar to xmonad
 cask "amethyst"
+# Text editor
+cask "emacs"
 # Keyboard customizer
 cask "karabiner-elements"
+# Control your tools with a few keystrokes
+cask "raycast"

@@ -20,8 +20,6 @@ alias ofd='open .'
 export EDITOR=nvim
 export VISUAL=nvim
 
-
+export PATH="$HOME/.emacs.d/bin:$PATH"
 set PATH $HOME/.cargo/bin $PATH
-
 starship init fish | source
-
