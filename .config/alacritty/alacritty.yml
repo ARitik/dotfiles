@@ -76,7 +76,7 @@ colors:
   name: Ashes (dark)
   author: Chris Kempson
   primary:
-    background: "#21252b"
+    background: "#1c2023"
     foreground: "#c7ccd1"
   cursor:
     text: "#1c2023"

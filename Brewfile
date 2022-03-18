@@ -5,10 +5,14 @@ tap "homebrew/services"
 tap "microsoft/git"
 # Clone of cat(1) with syntax highlighting and Git integration
 brew "bat"
+# Cross-platform make
+brew "cmake"
 # Reimplementation of ctags(1)
 brew "ctags"
 # Modern replacement for 'ls'
 brew "exa"
+# Simple, fast and user-friendly alternative to find
+brew "fd"
 # User-friendly command-line shell for UNIX-like operating systems
 brew "fish"
 # Distributed revision control system
