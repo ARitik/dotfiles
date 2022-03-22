@@ -1,0 +1,12 @@
+#+TITLE: Ritik's Emacs Config
+#+AUTHOR: Ambadi Ritik Krishnan
+
+* Setup Package.el To Work With MELPA
+
+#+begin_src
+(require 'package)
+(add-to-list 'package-archives
+             '("melpa" . "https://melpa.org/packages/"))
+(package-refresh-contents)
+(package-initialize)
+#+end_src
