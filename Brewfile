@@ -37,11 +37,11 @@ brew "tldr"
 brew "tmux"
 # GPU-accelerated terminal emulator
 cask "alacritty"
-# Automatic tiling window manager similar to xmonad
-cask "amethyst"
 # Text editor
 cask "emacs"
 # Keyboard customizer
 cask "karabiner-elements"
 # Control your tools with a few keystrokes
 cask "raycast"
+# Move and resize windows using keyboard shortcuts or snap areas
+cask "rectangle"
