@@ -1,0 +1,191 @@
+#+TITLE: Ritik's Emacs Config
+#+AUTHOR: Ambadi Ritik Krishnan
+
+* PACKAGE MANAGEMENT
+Source packages from the MELPA repository and install and manage them using `use-package`.
+** Setup Package.el to work with MELPA
+#+begin_src emacs-lisp
+(require 'package)
+(add-to-list 'package-archives
+             '("melpa" . "https://melpa.org/packages/"))
+(package-refresh-contents)
+(package-initialize)
+#+end_src
+
+** Setup `use-package`
+#+begin_src emacs-lisp
+(unless (package-installed-p 'use-package)
+  (package-install 'use-package))
+#+end_src
+
+* GRAPHICAL USER INTERFACE SETTINGS AND TWEAKS
+** Disable Menubar, Toolbars and Scrollbars
+#+begin_src emacs-lisp
+(menu-bar-mode -1)
+(tool-bar-mode -1)
+(scroll-bar-mode -1)
+#+end_src
+** Display Line Numbers and Truncated Lines
+#+begin_src emacs-lisp
+(global-display-line-numbers-mode 1) ;; Line numbers
+(setq display-line-numbers-type 'relative) ;;Relative line numbers
+(global-visual-line-mode t)
+#+end_src
+** Remove Startup Screen
+   #+begin_src emacs-lisp
+    (setq inhibit-startup-message t)
+   #+end_src
+** Disable Bell
+   #+begin_src emacs-lisp
+    (setq ring-bell-function 'ignore)
+   #+end_src
+** Set UTF-8 Encoding
+   #+begin_src emacs-lisp
+    (setq locale-coding-system 'utf-8)
+    (set-terminal-coding-system 'utf-8)
+    (set-keyboard-coding-system 'utf-8)
+    (set-selection-coding-system 'utf-8)
+    (prefer-coding-system 'utf-8)
+   #+end_src
+** Disable Backups and Auto-Saves
+   #+begin_src emacs-lisp
+    (setq make-backup-files nil)
+    (setq auto-save-default nil)
+   #+end_src
+* THEME
+** Flatland-emacs
+Flatland for Emacs is a direct port of the popular Flatland theme for Sublime Text developed by Pixel Lab.
+#+begin_src emacs-lisp
+(use-package flatland-theme
+  :ensure t)
+(load-theme 'flatland t)
+#+end_src
+* FONTS
+** JetBrainsMono NF 15
+#+begin_src emacs-lisp
+(set-face-attribute 'default nil
+                :font "JetBrainsMono NF 15"
+                :height 110
+                :weight 'medium)
+(set-face-attribute 'variable-pitch nil
+                :font "JetBrainsMono NF 15"
+                :height 120
+                :weight 'medium)
+(set-face-attribute 'fixed-pitch nil
+                :font "JetBrainsMono NF 15"
+                :height 110
+                :weight 'medium)
+;; Makes commented text and keywords italics.
+;; This is working in emacsclient but not emacs.
+;; Your font must have an italic face available.
+(set-face-attribute 'font-lock-comment-face nil
+                :slant 'italic)
+(set-face-attribute 'font-lock-keyword-face nil
+                :slant 'italic)
+;; Needed if using emacsclient. Otherwise, your fonts will be smaller than expected.
+(add-to-list 'default-frame-alist '(font . "JetBrainsMono NF-15"))
+;; changes certain keywords to symbols, such as lamda!
+(setq global-prettify-symbols-mode t)
+#+end_src
+
+* EVIL MODE
+** EVIL Package
+#+begin_src emacs-lisp
+  (use-package evil
+    :ensure t
+    :init      ;; tweak evil's configuration before loading it
+    (setq evil-want-C-u-scroll t) ;; Ctrl-u to scroll up
+    (setq evil-want-integration t) ;; This is optional since it's already set to t by default.
+    (setq evil-want-keybinding nil)
+    (setq evil-vsplit-window-right t)
+    (setq evil-split-window-below t)
+    (evil-mode))
+  (use-package evil-collection
+    :after evil
+    :ensure t
+    :config
+    (setq evil-collection-mode-list '(dashboard dired ibuffer))
+    (evil-collection-init))
+#+end_src
+
+** Evil-Commentary
+Package allowing us to use 'g-c-c' to comment and uncomment based on Commetary.vim.
+#+begin_src emacs-lisp
+(use-package evil-commentary
+  :ensure t)
+(evil-commentary-mode)
+#+end_src
+
+* KEYCHORD
+** Installing the key-chord package
+#+begin_src emacs-lisp
+	    (use-package key-chord
+	:ensure t)
+#+end_src
+
+** Set `j-k` to `ESC`.
+#+begin_src emacs-lisp
+    ;;Exit insert mode by pressing j and then k quickly
+    (setq key-chord-two-keys-delay 0.1)
+    (key-chord-define evil-insert-state-map "jk" 'evil-normal-state)
+    (key-chord-mode 1)
+  #+end_src
+
+* PACKAGES
+** Doom Modeline
+Modeline package imported from Doom Emacs.
+#+begin_src emacs-lisp
+(use-package doom-modeline
+  :ensure t)
+(doom-modeline-mode 1)
+#+end_src
+
+** Which Key
+   (use-package which-key
+:ensure t
+     :init
+     (setq which-key-side-window-location 'bottom
+	   which-key-sort-order #'which-key-key-order-alpha
+	   which-key-sort-uppercase-first nil
+	   which-key-add-column-padding 1
+	   which-key-max-display-columns nil
+	   which-key-min-display-lines 6
+	   which-key-side-window-slot -10
+	   which-key-side-window-max-height 0.25
+	   which-key-idle-delay 0.8
+	   which-key-max-description-length 25
+	   which-key-allow-imprecise-window-fit t
+	   which-key-separator " → " ))
+   (which-key-mode)
+ #+end_src
+ 
+** Rainbow Mode
+   Highlights hexadecimal color values.
+   #+begin_src emacs-lisp
+	(use-package rainbow-mode
+	:ensure t)
+	  (define-globalized-minor-mode global-rainbow-mode rainbow-mode
+	  (lambda () (rainbow-mode 1)))
+	  (global-rainbow-mode 1 )
+   #+end_src
+
+** Rainbow Delimeter
+   Colors paranethesis and other delimeters.
+   #+begin_src emacs-lisp
+    (use-package rainbow-delimiters
+    :ensure t
+    :init
+    (rainbow-delimiters-mode 1))
+   #+end_src
+* MISC
+** Electric Pair Mode
+   Electric Pair mode  is a global minor mode that provides a way to easily insert matching delimiters: parentheses, braces, brackets, etc.
+   #+begin_src emacs-lisp
+    (setq electric-pair-pairs '(
+				(?\{ . ?\})
+				(?\( . ?\))
+				(?\[ . ?\])
+				(?\" . ?\")
+    ))
+    (electric-pair-mode t)
+   #+end_src
