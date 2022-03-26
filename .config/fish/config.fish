@@ -1,7 +1,7 @@
 if status is-interactive
     # Commands to run in interactive sessions can go here
+  /usr/local/bin/starship init fish | source
 end
-
 # Aliases
 alias ls='exa --icons'
 alias ll='exa -l -g --icons'
@@ -22,4 +22,3 @@ export VISUAL=nvim
 
 export PATH="$HOME/.emacs.d/bin:$PATH"
 set PATH $HOME/.cargo/bin $PATH
-starship init fish | source
