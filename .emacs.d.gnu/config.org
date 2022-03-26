@@ -5,19 +5,54 @@
 Source packages from the MELPA repository and install and manage them using `use-package`.
 ** Setup Package.el to work with MELPA
 #+begin_src emacs-lisp
-(require 'package)
-(add-to-list 'package-archives
-             '("melpa" . "https://melpa.org/packages/"))
-(package-refresh-contents)
-(package-initialize)
+    (require 'package)
+    (setq package-enable-at-startup nil)
+    (add-to-list 'package-archives
+		 '("melpa" . "https://melpa.org/packages/"))
+  (package-initialize)
 #+end_src
-
 ** Setup `use-package`
 #+begin_src emacs-lisp
-(unless (package-installed-p 'use-package)
-  (package-install 'use-package))
+  (unless (package-installed-p 'use-package)
+    (package-refresh-contents)
+    (package-install 'use-package))
+(setq use-package-always-ensure t)
 #+end_src
 
+* STARTUP PERFORMANCE
+** Garbage Collection
+   #+begin_src emacs-lisp
+     ;; Using garbage magic hack.
+	 (use-package gcmh
+	 :ensure t
+	 :config
+	 (gcmh-mode 1))
+	 ;; Setting garbage collection threshold
+	 (setq gc-cons-threshold 402653184
+	     gc-cons-percentage 0.6)
+
+	 ;; Profile emacs startup
+	 (add-hook 'emacs-startup-hook
+		 (lambda ()
+		     (message "*** Emacs loaded in %s with %d garbage collections."
+			     (format "%.2f seconds"
+				     (float-time
+				     (time-subtract after-init-time before-init-time)))
+			     gcs-done)))
+
+	 ;; Silence compiler warnings as they can be pretty disruptive (setq comp-async-report-warnings-errors nil)
+   #+end_src
+** Native Compile
+   #+begin_src emacs-lisp
+;; Silence compiler warnings as they can be pretty disruptive
+(if (boundp 'comp-deferred-compilation)
+    (setq comp-deferred-compilation nil)
+    (setq native-comp-deferred-compilation nil))
+;; In noninteractive sessions, prioritize non-byte-compiled source files to
+;; prevent the use of stale byte-code. Otherwise, it saves us a little IO time
+;; to skip the mtime checks on every *.elc file.
+(setq load-prefer-newer noninteractive)
+   #+end_src
 * GRAPHICAL USER INTERFACE SETTINGS AND TWEAKS
 ** Disable Menubar, Toolbars and Scrollbars
 #+begin_src emacs-lisp
@@ -53,27 +88,29 @@ Source packages from the MELPA repository and install and manage them using `use
     (setq auto-save-default nil)
    #+end_src
 * THEME
-** Flatland-emacs
-Flatland for Emacs is a direct port of the popular Flatland theme for Sublime Text developed by Pixel Lab.
+** Doom-Opera
+Doom-Opera is part of the doom-themes package
 #+begin_src emacs-lisp
-(use-package flatland-theme
-  :ensure t)
-(load-theme 'flatland t)
+  (use-package doom-themes
+	:ensure t)
+      (setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
+	    doom-themes-enable-italic t) ; if nil, italics is universally disabled
+      (load-theme 'doom-opera t)
 #+end_src
 * FONTS
 ** JetBrainsMono NF 15
 #+begin_src emacs-lisp
 (set-face-attribute 'default nil
                 :font "JetBrainsMono NF 15"
-                :height 110
+                :height 150
                 :weight 'medium)
 (set-face-attribute 'variable-pitch nil
                 :font "JetBrainsMono NF 15"
-                :height 120
+                :height 160
                 :weight 'medium)
 (set-face-attribute 'fixed-pitch nil
                 :font "JetBrainsMono NF 15"
-                :height 110
+                :height 150
                 :weight 'medium)
 ;; Makes commented text and keywords italics.
 ;; This is working in emacsclient but not emacs.
@@ -89,7 +126,7 @@ Flatland for Emacs is a direct port of the popular Flatland theme for Sublime Te
 #+end_src
 
 * EVIL MODE
-** EVIL Package
+** Evil Package
 #+begin_src emacs-lisp
   (use-package evil
     :ensure t
@@ -131,6 +168,90 @@ Package allowing us to use 'g-c-c' to comment and uncomment based on Commetary.v
     (key-chord-mode 1)
   #+end_src
 
+* GENERAL KEYBINDINGS
+** Installing General.el
+#+begin_src emacs-lisp
+  (use-package general
+  :ensure t
+  :config
+  (general-evil-setup t))
+#+end_src
+** Essential Keybindings
+   #+begin_src emacs-lisp
+    (nvmap :keymaps 'override :prefix "SPC"
+	"SPC"   '(counsel-M-x :which-key "M-x")
+	"c c"   '(compile :which-key "Compile")
+	"c C"   '(recompile :which-key "Recompile")
+	"h r r" '((lambda () (interactive) (load-file "~/.emacs.d/init.el")) :which-key "Reload emacs config")
+	"t t"   '(toggle-truncate-lines :which-key "Toggle truncate lines"))
+   #+end_src
+** Files
+   #+begin_src emacs-lisp
+    (nvmap :states '(normal visual) :keymaps 'override :prefix "SPC"
+	"."     '(find-file :which-key "Find file")
+	"f f"   '(find-file :which-key "Find file")
+	"f r"   '(counsel-recentf :which-key "Recent files")
+	"f s"   '(save-buffer :which-key "Save file")
+	"f u"   '(sudo-edit-find-file :which-key "Sudo find file")
+	"f y"   '(dt/show-and-copy-buffer-path :which-key "Yank file path")
+	"f C"   '(copy-file :which-key "Copy file")
+	"f D"   '(delete-file :which-key "Delete file")
+	"f R"   '(rename-file :which-key "Rename file")
+	"f S"   '(write-file :which-key "Save file as...")
+	"f U"   '(sudo-edit :which-key "Sudo edit file"))
+   #+end_src
+** Splits and Windows
+   #+begin_src emacs-lisp
+    (winner-mode 1)
+    (nvmap :prefix "SPC"
+       ;; Window splits
+       "w c"   '(evil-window-delete :which-key "Close window")
+       "w n"   '(evil-window-new :which-key "New window")
+       "w s"   '(evil-window-split :which-key "Horizontal split window")
+       "w v"   '(evil-window-vsplit :which-key "Vertical split window")
+       ;; Window motions
+       "w h"   '(evil-window-left :which-key "Window left")
+       "w j"   '(evil-window-down :which-key "Window down")
+       "w k"   '(evil-window-up :which-key "Window up")
+       "w l"   '(evil-window-right :which-key "Window right")
+       "w w"   '(evil-window-next :which-key "Goto next window")
+       ;; winner mode
+       "w <left>"  '(winner-undo :which-key "Winner undo")
+       "w <right>" '(winner-redo :which-key "Winner redo"))
+   #+end_src
+** Buffers and Bookmarks
+   #+begin_src emacs-lisp
+    (nvmap :prefix "SPC"
+	"b b"   '(ibuffer :which-key "Ibuffer")
+	"b c"   '(clone-indirect-buffer-other-window :which-key "Clone indirect buffer other window")
+	"b k"   '(kill-current-buffer :which-key "Kill current buffer")
+	"b n"   '(next-buffer :which-key "Next buffer")
+	"b p"   '(previous-buffer :which-key "Previous buffer")
+	"b B"   '(ibuffer-list-buffers :which-key "Ibuffer list buffers")
+	"b K"   '(kill-buffer :which-key "Kill buffer"))
+   #+end_src 
+* DIRED
+** Peep-Dired
+   #+begin_src emacs-lisp
+	  (use-package peep-dired
+	  :ensure t
+	   )
+
+     (nvmap :states '(normal visual) :keymaps 'override :prefix "SPC"
+		    "d d" '(dired :which-key "Open dired")
+		    "d j" '(dired-jump :which-key "Dired jump to current")
+		    "d p" '(peep-dired :which-key "Peep-dired"))
+
+     (with-eval-after-load 'dired
+       ;;(define-key dired-mode-map (kbd "M-p") 'peep-dired)
+       (evil-define-key 'normal dired-mode-map (kbd "h") 'dired-up-directory)
+       (evil-define-key 'normal dired-mode-map (kbd "l") 'dired-find-file) ; use dired-find-file instead if not using dired-open package
+       (evil-define-key 'normal peep-dired-mode-map (kbd "j") 'peep-dired-next-file)
+       (evil-define-key 'normal peep-dired-mode-map (kbd "k") 'peep-dired-prev-file))
+
+     (add-hook 'peep-dired-hook 'evil-normalize-keymaps)
+   #+end_src
+* ORG MODE
 * PACKAGES
 ** Doom Modeline
 Modeline package imported from Doom Emacs.
@@ -140,7 +261,34 @@ Modeline package imported from Doom Emacs.
 (doom-modeline-mode 1)
 #+end_src
 
+** Dashboard
+   #+begin_src emacs-lisp
+     (use-package dashboard
+     :ensure t
+     :config
+	 (dashboard-setup-startup-hook)
+	 ;; (setq dashboard-startup-banner "")
+	 (setq dashboard-items '((recents  . 5)
+				 (projects . 5)))
+	 (setq dashboard-banner-logo-title "ambadiritik@gmail.com"))
+	 (setq initial-buffer-choice (lambda () (get-buffer "*dashboard*")))
+   #+end_src
+** All the Icons
+#+begin_src emacs-lisp
+(use-package all-the-icons
+  :ensure t
+  :init)
+
+(use-package all-the-icons-dired
+  :ensure t
+  :init (add-hook 'dired-mode-hook 'all-the-icons-dired-mode))
+
+(use-package all-the-icons-ibuffer
+  :ensure t
+  :init (all-the-icons-ibuffer-mode 1))
+#+end_src
 ** Which Key
+   #+begin_src emacs-lisp
    (use-package which-key
 :ensure t
      :init
@@ -159,6 +307,13 @@ Modeline package imported from Doom Emacs.
    (which-key-mode)
  #+end_src
  
+** Projectile
+#+begin_src emacs-lisp
+  (use-package projectile
+  :ensure t
+  :config
+  (projectile-global-mode 1))
+#+end_src
 ** Rainbow Mode
    Highlights hexadecimal color values.
    #+begin_src emacs-lisp
@@ -177,6 +332,14 @@ Modeline package imported from Doom Emacs.
     :init
     (rainbow-delimiters-mode 1))
    #+end_src
+** Vterm
+   Vterm is a terminal emulator within Emacs.  The ‘shell-file-name’ setting sets the shell to be used in M-x shell, M-x term, M-x ansi-term and M-x vterm.  By default, the shell is set to ‘fish’.
+   #+begin_src emacs-lisp
+	 (use-package vterm
+     :custom  (vterm-install t))
+(setq shell-file-name "usr/local/bin/fish"
+      vterm-max-scrollback 5000)
+   #+end_src
 * MISC
 ** Electric Pair Mode
    Electric Pair mode  is a global minor mode that provides a way to easily insert matching delimiters: parentheses, braces, brackets, etc.
@@ -189,3 +352,10 @@ Modeline package imported from Doom Emacs.
     ))
     (electric-pair-mode t)
    #+end_src
+   
+* RUNTIME PERFORMANCE
+  Dial the GC threshold back down so that garbage collection happens more frequently but in less time.
+  #+begin_src emacs-lisp
+    ;; Make gc pauses faster by decreasing the threshold.
+    (setq gc-cons-threshold (* 2 1000 1000))
+  #+end_src
