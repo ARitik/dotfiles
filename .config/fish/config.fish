@@ -1,7 +1,8 @@
 if status is-interactive
-    # Commands to run in interactive sessions can go here
-  /usr/local/bin/starship init fish | source
+  # /usr/local/bin/starship init fish | source
+  starship init fish | source
 end
+
 # Aliases
 alias ls='exa --icons'
 alias ll='exa -l -g --icons'
@@ -15,10 +16,11 @@ alias fishrc='nvim ~/.config/fish'
 alias altyrc='nvim ~/.config/alacritty/alacritty.yml'
 alias ofd='open .'
 
-
 # Editor
 export EDITOR=nvim
 export VISUAL=nvim
 
-export PATH="$HOME/.emacs.d/bin:$PATH"
+set PATH $HOME/.emacs.d/bin $PATH
 set PATH $HOME/.cargo/bin $PATH
+# set PATH /usr/local/bin $PATH
+

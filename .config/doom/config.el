@@ -3,8 +3,8 @@
 ;; Place your private configuration here! Remember, you do not need to run 'doom
 ;; sync' after modifying this file!
 
-(setq doom-font (font-spec :family "JetBrainsMono NF" :size 15)
-      doom-variable-pitch-font (font-spec :family "JetBrainsMono NF" :size 15))
+(setq doom-font (font-spec :family "Iosevka SS04" :size 16)
+      doom-variable-pitch-font (font-spec :family "Iosevka SS04" :size 24))
 
 ;; Some functionality uses this to identify you, e.g. GPG configuration, email
 ;; clients, file templates and snippets. It is optional.
@@ -34,7 +34,7 @@
 ;; There are two ways to load a theme. Both assume the theme is installed and
 ;; available. You can either set `doom-theme' or manually load a theme with the
 ;; `load-theme' function. This is the default:
-(setq doom-theme 'doom-nord)
+(setq doom-theme 'doom-spacegrey)
 
 ;; This determines the style of line numbers in effect. If set to `nil', line
 ;; numbers are disabled. For relative line numbers, set this to `relative'.
@@ -50,6 +50,8 @@
   (lambda () (rainbow-mode 1)))
 (global-rainbow-mode 1 )
 
+(when (string= system-type "darwin")
+  (setq dired-use-ls-dired nil))
 ;; Whenever you reconfigure a package, make sure to wrap your config in an
 ;; `after!' block, otherwise Doom's defaults may override your settings. E.g.
 ;;
