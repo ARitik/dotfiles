@@ -1,8 +1,6 @@
 #+TITLE: Ritik's Emacs Config
 #+AUTHOR: Ambadi Ritik Krishnan
 
-:TOC:
-
 * PACKAGE MANAGEMENT
 Source packages from the MELPA repository and install and manage them using `use-package`.
 ** Setup Package.el to work with MELPA
@@ -74,8 +72,8 @@ Source packages from the MELPA repository and install and manage them using `use
 #+end_src
 ** Maximize windows by default
 #+begin_src emacs-lisp
-  ;; (set-frame-parameter (selected-frame) 'fullscreen 'maximized)
-  ;; (add-to-list 'default-frame-alist '(fullscreen . maximized))
+(set-frame-parameter (selected-frame) 'fullscreen 'maximized)
+(add-to-list 'default-frame-alist '(fullscreen . maximized))
 #+end_src
 ** Disable Bell and Dialog Boxes
 #+begin_src emacs-lisp
@@ -119,15 +117,15 @@ Doom-Spacegrey is part of the doom-themes package
 #+begin_src emacs-lisp
   (set-face-attribute 'default nil
 		      :font "Iosevka SS04"
-		      :height 170
+		      :height 180
 		      :weight 'medium)
   (set-face-attribute 'variable-pitch nil
 		      :font "Iosevka SS04"
 		      :height 180
-		      :weight 'medium)
+		      :weight 'bold)
   (set-face-attribute 'fixed-pitch nil
 		      :font "Iosevka SS04"
-		      :height 170
+		      :height 180
 		      :weight 'medium)
   ;; Makes commented text and keywords italics.
   ;; This is working in emacsclient but not emacs.
@@ -137,144 +135,11 @@ Doom-Spacegrey is part of the doom-themes package
   (set-face-attribute 'font-lock-keyword-face nil
 		      :slant 'italic)
   ;; Needed if using emacsclient. Otherwise, your fonts will be smaller than expected.
-  (add-to-list 'default-frame-alist '(font . "Iosevka SS04-16"))
+  (add-to-list 'default-frame-alist '(font . "Iosevka SS04-18"))
   ;; changes certain keywords to symbols, such as lamda!
   (setq global-prettify-symbols-mode t)
 #+end_src
 
-* EVIL MODE
-** Evil Package
-#+begin_src emacs-lisp
-  (use-package evil
-    :ensure t
-    :init      ;; tweak evil's configuration before loading it
-    (setq evil-want-C-u-scroll t) ;; Ctrl-u to scroll up
-    (setq evil-want-C-i-jump nil) ;;TAB didn't work in the console (was bound to evil-jump-forward)
-    (setq evil-want-integration t) ;; This is optional since it's already set to t by default.
-    (setq evil-want-keybinding nil)
-    (setq evil-vsplit-window-right t)
-    (setq evil-split-window-below t)
-    (setq evil-undo-system 'undo-redo) ;;undo-redo comes standard with Emacs 28+
-    (evil-mode))
-  (use-package evil-collection
-    :after evil
-    :ensure t
-    :config
-    (setq evil-collection-mode-list '(dashboard dired ibuffer))
-    (evil-collection-init))
-#+end_src
-
-** Evil-Commentary
-Package allowing us to use 'g-c-c' to comment and uncomment based on Commetary.vim.
-#+begin_src emacs-lisp
-  (use-package evil-commentary
-    :ensure t)
-  (evil-commentary-mode)
-#+end_src
-
-* KEYCHORD
-** Installing the key-chord package
-#+begin_src emacs-lisp
-  (use-package key-chord
-    :ensure t)
-#+end_src
-
-** Set `j-k` to `ESC`.
-#+begin_src emacs-lisp
-  ;;Exit insert mode by pressing j and then k quickly
-  (setq key-chord-two-keys-delay 0.1)
-  (key-chord-define evil-insert-state-map "jk" 'evil-normal-state)
-  (key-chord-mode 1)
-#+end_src
-
-* GENERAL KEYBINDINGS
-** Installing General.el
-#+begin_src emacs-lisp
-  (use-package general
-    :ensure t
-    :config
-    (general-evil-setup t))
-#+end_src
-** Essential Keybindings
-#+begin_src emacs-lisp
-  (global-set-key (kbd "<escape>") 'keyboard-escape-quit) ;; ESC cancels all
-  (define-key evil-normal-state-map "u" 'undo)
-  (define-key evil-normal-state-map (kbd "C-r") 'undo-redo)
-  ;; (global-set-key (kbd "S-k") 'helpful-at-point) ;; 
-
-  (nvmap :keymaps 'override :prefix "SPC"
-    "SPC"   '(counsel-M-x :which-key "M-x")
-    "c c"   '(compile :which-key "Compile")
-    "c C"   '(recompile :which-key "Recompile")
-    "h r r" '((lambda () (interactive) (load-file "~/.emacs.d/init.el")) :which-key "Reload emacs config")
-    "t t"   '(toggle-truncate-lines :which-key "Toggle truncate lines"))
-#+end_src
-** Files
-#+begin_src emacs-lisp
-  (nvmap :states '(normal visual) :keymaps 'override :prefix "SPC"
-    "."     '(find-file :which-key "Find file")
-    "f f"   '(find-file :which-key "Find file")
-    "f r"   '(counsel-recentf :which-key "Recent files")
-    "f s"   '(save-buffer :which-key "Save file")
-    "f u"   '(sudo-edit-find-file :which-key "Sudo find file")
-    "f y"   '(dt/show-and-copy-buffer-path :which-key "Yank file path")
-    "f C"   '(copy-file :which-key "Copy file")
-    "f D"   '(delete-file :which-key "Delete file")
-    "f R"   '(rename-file :which-key "Rename file")
-    "f S"   '(write-file :which-key "Save file as...")
-    "f U"   '(sudo-edit :which-key "Sudo edit file"))
-#+end_src
-** Splits and Windows
-#+begin_src emacs-lisp
-  (winner-mode 1)
-  (nvmap :prefix "SPC"
-    ;; Window splits
-    "w c"   '(evil-window-delete :which-key "Close window")
-    "w n"   '(evil-window-new :which-key "New window")
-    "w s"   '(evil-window-split :which-key "Horizontal split window")
-    "w v"   '(evil-window-vsplit :which-key "Vertical split window")
-    ;; Window motions
-    "w h"   '(evil-window-left :which-key "Window left")
-    "w j"   '(evil-window-down :which-key "Window down")
-    "w k"   '(evil-window-up :which-key "Window up")
-    "w l"   '(evil-window-right :which-key "Window right")
-    "w w"   '(evil-window-next :which-key "Goto next window")
-    ;; winner mode
-    "w <left>"  '(winner-undo :which-key "Winner undo")
-    "w <right>" '(winner-redo :which-key "Winner redo"))
-#+end_src
-** Buffers and Bookmarks
-#+begin_src emacs-lisp
-  (nvmap :prefix "SPC"
-    "b b"   '(ibuffer :which-key "Ibuffer")
-    "b c"   '(clone-indirect-buffer-other-window :which-key "Clone indirect buffer other window")
-    "b k"   '(kill-current-buffer :which-key "Kill current buffer")
-    "b n"   '(next-buffer :which-key "Next buffer")
-    "b p"   '(previous-buffer :which-key "Previous buffer")
-    "b B"   '(ibuffer-list-buffers :which-key "Ibuffer list buffers")
-    "b K"   '(kill-buffer :which-key "Kill buffer"))
-#+end_src 
-* DIRED
-** Peep-Dired
-#+begin_src emacs-lisp
-  (use-package peep-dired
-    :ensure t
-    )
-
-  (nvmap :states '(normal visual) :keymaps 'override :prefix "SPC"
-    "d d" '(dired :which-key "Open dired")
-    "d j" '(dired-jump :which-key "Dired jump to current")
-    "d p" '(peep-dired :which-key "Peep-dired"))
-
-  (with-eval-after-load 'dired
-    ;;(define-key dired-mode-map (kbd "M-p") 'peep-dired)
-    (evil-define-key 'normal dired-mode-map (kbd "h") 'dired-up-directory)
-    (evil-define-key 'normal dired-mode-map (kbd "l") 'dired-find-file) ; use dired-find-file instead if not using dired-open package
-    (evil-define-key 'normal peep-dired-mode-map (kbd "j") 'peep-dired-next-file)
-    (evil-define-key 'normal peep-dired-mode-map (kbd "k") 'peep-dired-prev-file))
-
-  (add-hook 'peep-dired-hook 'evil-normalize-keymaps)
-#+end_src
 * ORG MODE
 ** Org Bullets
 #+begin_src emacs-lisp
@@ -310,13 +175,208 @@ Org-tempo is a package that allows for '<s' followed by TAB to expand to a begin
     org-edit-src-content-indentation 0)
 #+end_src
 ** Table of Contents
-Toc-org helps you to have an up-to-date table of contents in org files without exporting (useful useful for README files on GitHub).  Use :TOC: to create the table.
+Toc-org helps you to have an up-to-date table of contents in org files without exporting (useful for README files on GitHub).  Use :TOC: to create the table.
 #+begin_src emacs-lisp
 (use-package toc-org
   :commands toc-org-enable
   :init (add-hook 'org-mode-hook 'toc-org-enable))
 #+end_src
-* GENERAL PACKAGES
+* EVIL MODE
+** Evil Package
+#+begin_src emacs-lisp
+  (use-package evil
+    :ensure t
+    :init      ;; tweak evil's configuration before loading it
+    (setq evil-want-C-u-scroll t) ;; Ctrl-u to scroll up
+    (setq evil-want-C-i-jump nil) ;;TAB didn't work in the console (was bound to evil-jump-forward)
+    (setq evil-want-integration t) ;; This is optional since it's already set to t by default.
+    (setq evil-want-keybinding nil)
+    (setq evil-vsplit-window-right t)
+    (setq evil-split-window-below t)
+    (setq evil-undo-system 'undo-redo) ;;undo-redo comes standard with Emacs 28+
+    (evil-mode))
+  (use-package evil-collection
+    :after evil
+    :ensure t
+    :config
+    (setq evil-collection-mode-list '(dashboard dired ibuffer))
+    (evil-collection-init))
+#+end_src
+
+** Evil-Commentary
+Package allowing us to use 'g-c-c' to comment and uncomment based on Commetary.vim.
+#+begin_src emacs-lisp
+  (use-package evil-commentary
+    :ensure t)
+  (evil-commentary-mode)
+#+end_src
+
+* COMPLETION FRAMEWORK (Vertico/Marginalia/Orderless/Consult/Embark)
+** Vertico
+#+begin_src emacs-lisp
+  (use-package vertico
+    :ensure t
+    :init
+    (vertico-mode))
+#+end_src
+** Marginalia
+#+begin_src emacs-lisp
+  (use-package marginalia
+    :after vertico
+    :ensure t
+    :custom
+    (marginalia-annotators '(marginalia-annotators-heavy marginalia-annotators-light nil))
+    :init
+    (marginalia-mode))
+#+end_src
+** Orderless
+#+begin_src emacs-lisp 
+(use-package orderless
+  :ensure t
+  :config
+  (setq completion-styles '(orderless)))
+#+end_src
+** Consult
+#+begin_src emacs-lisp 
+;; Example configuration for Consult
+(use-package consult
+  ;; Replace bindings. Lazily loaded due by `use-package'.
+  :bind (;; C-c bindings (mode-specific-map)
+         ("C-c h" . consult-history)
+         ("C-c m" . consult-mode-command)
+         ("C-c k" . consult-kmacro)
+         ;; C-x bindings (ctl-x-map)
+         ("C-x M-:" . consult-complex-command)     ;; orig. repeat-complex-command
+         ("C-x b" . consult-buffer)                ;; orig. switch-to-buffer
+         ("C-x 4 b" . consult-buffer-other-window) ;; orig. switch-to-buffer-other-window
+         ("C-x 5 b" . consult-buffer-other-frame)  ;; orig. switch-to-buffer-other-frame
+         ("C-x r b" . consult-bookmark)            ;; orig. bookmark-jump
+         ("C-x p b" . consult-project-buffer)      ;; orig. project-switch-to-buffer
+         ;; Custom M-# bindings for fast register access
+         ("M-#" . consult-register-load)
+         ("M-'" . consult-register-store)          ;; orig. abbrev-prefix-mark (unrelated)
+         ("C-M-#" . consult-register)
+         ;; Other custom bindings
+         ("M-y" . consult-yank-pop)                ;; orig. yank-pop
+         ("<help> a" . consult-apropos)            ;; orig. apropos-command
+         ;; M-g bindings (goto-map)
+         ("M-g e" . consult-compile-error)
+         ("M-g f" . consult-flymake)               ;; Alternative: consult-flycheck
+         ("M-g g" . consult-goto-line)             ;; orig. goto-line
+         ("M-g M-g" . consult-goto-line)           ;; orig. goto-line
+         ("M-g o" . consult-outline)               ;; Alternative: consult-org-heading
+         ("M-g m" . consult-mark)
+         ("M-g k" . consult-global-mark)
+         ("M-g i" . consult-imenu)
+         ("M-g I" . consult-imenu-multi)
+         ;; M-s bindings (search-map)
+         ("M-s d" . consult-find)
+         ("M-s D" . consult-locate)
+         ("M-s g" . consult-grep)
+         ("M-s G" . consult-git-grep)
+         ("M-s r" . consult-ripgrep)
+         ("M-s l" . consult-line)
+         ("M-s L" . consult-line-multi)
+         ("M-s m" . consult-multi-occur)
+         ("M-s k" . consult-keep-lines)
+         ("M-s u" . consult-focus-lines)
+         ;; Isearch integration
+         ("M-s e" . consult-isearch-history)
+         :map isearch-mode-map
+         ("M-e" . consult-isearch-history)         ;; orig. isearch-edit-string
+         ("M-s e" . consult-isearch-history)       ;; orig. isearch-edit-string
+         ("M-s l" . consult-line)                  ;; needed by consult-line to detect isearch
+         ("M-s L" . consult-line-multi)            ;; needed by consult-line to detect isearch
+         ;; Minibuffer history
+         :map minibuffer-local-map
+         ("M-s" . consult-history)                 ;; orig. next-matching-history-element
+         ("M-r" . consult-history))                ;; orig. previous-matching-history-element
+
+  ;; Enable automatic preview at point in the *Completions* buffer. This is
+  ;; relevant when you use the default completion UI.
+  :hook (completion-list-mode . consult-preview-at-point-mode)
+
+  ;; The :init configuration is always executed (Not lazy)
+  :init
+
+  ;; Optionally configure the register formatting. This improves the register
+  ;; preview for `consult-register', `consult-register-load',
+  ;; `consult-register-store' and the Emacs built-ins.
+  (setq register-preview-delay 0.5
+        register-preview-function #'consult-register-format)
+
+  ;; Optionally tweak the register preview window.
+  ;; This adds thin lines, sorting and hides the mode line of the window.
+  (advice-add #'register-preview :override #'consult-register-window)
+
+  ;; Optionally replace `completing-read-multiple' with an enhanced version.
+  (advice-add #'completing-read-multiple :override #'consult-completing-read-multiple)
+
+  ;; Use Consult to select xref locations with preview
+  (setq xref-show-xrefs-function #'consult-xref
+        xref-show-definitions-function #'consult-xref)
+
+  ;; Configure other variables and modes in the :config section,
+  ;; after lazily loading the package.
+  :config
+
+  ;; Optionally configure preview. The default value
+  ;; is 'any, such that any key triggers the preview.
+  ;; (setq consult-preview-key 'any)
+  ;; (setq consult-preview-key (kbd "M-."))
+  ;; (setq consult-preview-key (list (kbd "<S-down>") (kbd "<S-up>")))
+  ;; For some commands and buffer sources it is useful to configure the
+  ;; :preview-key on a per-command basis using the `consult-customize' macro.
+  (consult-customize
+   consult-theme
+   :preview-key '(:debounce 0.2 any)
+   consult-ripgrep consult-git-grep consult-grep
+   consult-bookmark consult-recent-file consult-xref
+   consult--source-bookmark consult--source-recent-file
+   consult--source-project-recent-file
+   :preview-key (kbd "M-."))
+
+  ;; Optionally configure the narrowing key.
+  ;; Both < and C-+ work reasonably well.
+  (setq consult-narrow-key "<") ;; (kbd "C-+")
+
+  ;; Optionally make narrowing help available in the minibuffer.
+  ;; You may want to use `embark-prefix-help-command' or which-key instead.
+  ;; (define-key consult-narrow-map (vconcat consult-narrow-key "?") #'consult-narrow-help)
+
+  ;; By default `consult-project-function' uses `project-root' from project.el.
+  ;; Optionally configure a different project root function.
+  ;; There are multiple reasonable alternatives to chose from.
+  ;;;; 1. project.el (the default)
+  ;; (setq consult-project-function #'consult--default-project--function)
+  ;;;; 2. projectile.el (projectile-project-root)
+  ;; (autoload 'projectile-project-root "projectile")
+  ;; (setq consult-project-function (lambda (_) (projectile-project-root)))
+  ;;;; 3. vc.el (vc-root-dir)
+  ;; (setq consult-project-function (lambda (_) (vc-root-dir)))
+  ;;;; 4. locate-dominating-file
+  ;; (setq consult-project-function (lambda (_) (locate-dominating-file "." ".git")))
+)
+#+end_src
+* LSP AND SYNTAX CHECKING PACKAGES
+** LSP-MODE
+** LSP-UI
+** Flycheck
+** Company 
+** Language Support
+* ESSENTIAL PACKAGES
+** Centaur Tabs
+#+begin_src emacs-lisp
+(use-package centaur-tabs
+  :demand
+  :config
+  (centaur-tabs-mode t)
+  :bind
+  ("C-<prior>" . centaur-tabs-backward)
+  ("C-<next>" . centaur-tabs-forward))
+(setq centaur-tabs-height 32)
+(setq centaur-tabs-set-icons t)
+#+end_src
 ** Doom Modeline
 Modeline package imported from Doom Emacs.
 #+begin_src emacs-lisp
@@ -336,14 +396,9 @@ Modeline package imported from Doom Emacs.
     (setq dashboard-items '((recents  . 5)
 			    (projects . 5)))
     (setq dashboard-banner-logo-title "emacs"))
-  (setq dashboard-startup-banner "~/.emacs.d/img/g_one.gif")  ;; use custom image as banner
+  (setq dashboard-startup-banner "~/.emacs.d/img/Emacs.png")  ;; use custom image as banner
   (setq dashboard-center-content t)
   (setq initial-buffer-choice (lambda () (get-buffer "*dashboard*")))
-#+end_src
-** Helpful
-#+begin_src emacs-lisp
-  ;; (use-package helpful
-  ;; :ensure t)
 #+end_src
 ** All the Icons
 #+begin_src emacs-lisp
@@ -427,32 +482,88 @@ Open Vterm as a pop-up window.
 #+begin_src emacs-lisp
   (defun my/vterm-toggle ())
 #+end_src
-** Vertico
+* KEYCHORD
+** Installing the key-chord package
 #+begin_src emacs-lisp
-  (use-package vertico
+  (use-package key-chord
+    :ensure t)
+#+end_src
+
+** Set `j-k` to `ESC`.
+#+begin_src emacs-lisp
+  ;;Exit insert mode by pressing j and then k quickly
+  (setq key-chord-two-keys-delay 0.1)
+  (key-chord-define evil-insert-state-map "jk" 'evil-normal-state)
+  (key-chord-mode 1)
+#+end_src
+
+* GENERAL KEYBINDINGS
+** Installing General.el
+#+begin_src emacs-lisp
+  (use-package general
     :ensure t
-    :init
-    (vertico-mode))
+    :config
+    (general-evil-setup t))
 #+end_src
-** Marginalia
+** Essential Keybindings
 #+begin_src emacs-lisp
-  (use-package marginalia
-    :after vertico
-    :ensure t
-    :custom
-    (marginalia-annotators '(marginalia-annotators-heavy marginalia-annotators-light nil))
-    :init
-    (marginalia-mode))
+  (global-set-key (kbd "<escape>") 'keyboard-escape-quit) ;; ESC cancels all
+  (define-key evil-normal-state-map "u" 'undo)
+  (define-key evil-normal-state-map (kbd "C-r") 'undo-redo)
+  ;; (global-set-key (kbd "S-k") 'helpful-at-point) ;; 
+
+  (nvmap :keymaps 'override :prefix "SPC"
+    "SPC"   '(execute-extended-command :which-key "M-x")
+    "c c"   '(compile :which-key "Compile")
+    "c C"   '(recompile :which-key "Recompile")
+    "h r r" '((lambda () (interactive) (load-file "~/.emacs.d/init.el")) :which-key "Reload emacs config")
+    "t t"   '(toggle-truncate-lines :which-key "Toggle truncate lines"))
 #+end_src
-* LSP AND SYNTAX CHECKING PACKAGES
-** Flycheck
-Flycheck is a modern on-the-fly syntax checking extension for GNU Emacs, intended as replacement for the older Flymake extension which is part of GNU Emacs.
+** Files
 #+begin_src emacs-lisp
-(use-package flycheck)
-(global-flycheck-mode)
+  (nvmap :states '(normal visual) :keymaps 'override :prefix "SPC"
+    "f f"   '(find-file :which-key "Find file")
+    "f r"   '(consult-recent-file :which-key "Recent files")
+    "f s"   '(save-buffer :which-key "Save file")
+    "f u"   '(sudo-edit-find-file :which-key "Sudo find file")
+    "f y"   '(dt/show-and-copy-buffer-path :which-key "Yank file path")
+    "f C"   '(copy-file :which-key "Copy file")
+    "f D"   '(delete-file :which-key "Delete file")
+    "f R"   '(rename-file :which-key "Rename file")
+    "f S"   '(write-file :which-key "Save file as...")
+    "f U"   '(sudo-edit :which-key "Sudo edit file"))
 #+end_src
-#+begin_src
-* MISC
+** Splits and Windows
+#+begin_src emacs-lisp
+  (winner-mode 1)
+  (nvmap :prefix "SPC"
+    ;; Window splits
+    "w c"   '(evil-window-delete :which-key "Close window")
+    "w n"   '(evil-window-new :which-key "New window")
+    "w s"   '(evil-window-split :which-key "Horizontal split window")
+    "w v"   '(evil-window-vsplit :which-key "Vertical split window")
+    ;; Window motions
+    "w h"   '(evil-window-left :which-key "Window left")
+    "w j"   '(evil-window-down :which-key "Window down")
+    "w k"   '(evil-window-up :which-key "Window up")
+    "w l"   '(evil-window-right :which-key "Window right")
+    "w w"   '(evil-window-next :which-key "Goto next window")
+    ;; winner mode
+    "w <left>"  '(winner-undo :which-key "Winner undo")
+    "w <right>" '(winner-redo :which-key "Winner redo"))
+#+end_src
+** Buffers and Bookmarks
+#+begin_src emacs-lisp
+  (nvmap :prefix "SPC"
+    "b b"   '(consult-buffer :which-key "Ibuffer")
+    "b c"   '(clone-indirect-buffer-other-window :which-key "Clone indirect buffer other window")
+    "b k"   '(kill-current-buffer :which-key "Kill current buffer")
+    "b n"   '(next-buffer :which-key "Next buffer")
+    "b p"   '(previous-buffer :which-key "Previous buffer")
+    "b B"   '(ibuffer-list-buffers :which-key "Ibuffer list buffers")
+    "b K"   '(kill-buffer :which-key "Kill buffer"))
+#+end_src 
+* MISC SETTINGS
 ** Electric Pair Mode
 Electric Pair mode  is a global minor mode that provides a way to easily insert matching delimiters: parentheses, braces, brackets, etc.
 #+begin_src emacs-lisp
