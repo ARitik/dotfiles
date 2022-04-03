@@ -23,6 +23,8 @@ brew "git"
 brew "gnu-typist"
 # Generic library support script
 brew "libtool"
+# Improved top (interactive process viewer)
+brew "htop"
 # Tools and libraries to manipulate images in many formats
 brew "imagemagick"
 # C99 library which implements a VT220 or xterm terminal emulator
