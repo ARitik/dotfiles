@@ -5,147 +5,189 @@
 Source packages from the MELPA repository and install and manage them using `use-package`.
 ** Setup Package.el to work with MELPA
 #+begin_src emacs-lisp
-  (require 'package)
-  (setq package-enable-at-startup nil)
-  (add-to-list 'package-archives
-	       '("melpa" . "https://melpa.org/packages/"))
-  (package-initialize)
+(require 'package)
+(setq package-enable-at-startup nil)
+(add-to-list 'package-archives
+             '("melpa" . "https://melpa.org/packages/"))
+(package-initialize)
 #+end_src
+
 ** Setup `use-package`
 #+begin_src emacs-lisp
-  (unless (package-installed-p 'use-package)
-    (package-refresh-contents)
-    (package-install 'use-package))
-  (setq use-package-always-ensure t)
+(unless (package-installed-p 'use-package)
+  (package-refresh-contents)
+  (package-install 'use-package))
+(setq use-package-always-ensure t)
 #+end_src
 
 * STARTUP PERFORMANCE
 ** Garbage Collection
 #+begin_src emacs-lisp
-  ;; Using garbage magic hack.
-  (use-package gcmh
-    :ensure t
-    :config
-    (gcmh-mode 1))
-  ;; Setting garbage collection threshold
-  (setq gc-cons-threshold 402653184
-	gc-cons-percentage 0.6)
+;; Using garbage magic hack.
+(use-package gcmh
+  :ensure t
+  :config
+  (gcmh-mode 1))
+;; Setting garbage collection threshold
+(setq gc-cons-threshold 402653184
+      gc-cons-percentage 0.6)
 
-  ;; Profile emacs startup
-  (add-hook 'emacs-startup-hook
-	    (lambda ()
-	      (message "*** Emacs loaded in %s with %d garbage collections."
-		       (format "%.2f seconds"
-			       (float-time
-				(time-subtract after-init-time before-init-time)))
-		       gcs-done)))
+;; Profile emacs startup
+(add-hook 'emacs-startup-hook
+          (lambda ()
+            (message "*** Emacs loaded in %s with %d garbage collections."
+                     (format "%.2f seconds"
+                             (float-time
+                              (time-subtract after-init-time before-init-time)))
+                     gcs-done)))
 
-  ;; Silence compiler warnings as they can be pretty disruptive (setq comp-async-report-warnings-errors nil)
+;; Silence compiler warnings as they can be pretty disruptive (setq comp-async-report-warnings-errors nil)
 #+end_src
+
 ** Native Compile
 #+begin_src emacs-lisp
-  ;; Silence compiler warnings as they can be pretty disruptive
-  (if (boundp 'comp-deferred-compilation)
-      (setq comp-deferred-compilation nil)
-    (setq native-comp-deferred-compilation nil))
-  ;; In noninteractive sessions, prioritize non-byte-compiled source files to
-  ;; prevent the use of stale byte-code. Otherwise, it saves us a little IO time
-  ;; to skip the mtime checks on every *.elc file.
-  (setq load-prefer-newer noninteractive)
+;; Silence compiler warnings as they can be pretty disruptive
+(if (boundp 'comp-deferred-compilation)
+    (setq comp-deferred-compilation nil)
+  (setq native-comp-deferred-compilation nil))
+;; In noninteractive sessions, prioritize non-byte-compiled source files to
+;; prevent the use of stale byte-code. Otherwise, it saves us a little IO time
+;; to skip the mtime checks on every *.elc file.
+(setq load-prefer-newer noninteractive)
 #+end_src
+
 * GRAPHICAL USER INTERFACE SETTINGS AND TWEAKS
 ** Disable Menubar, Toolbars and Scrollbars
 #+begin_src emacs-lisp
-  (menu-bar-mode -1)
-  (tool-bar-mode -1)
-  (scroll-bar-mode -1)
+(menu-bar-mode -1)
+(tool-bar-mode -1)
+(scroll-bar-mode -1)
 #+end_src
+
 ** Display Line Numbers and Truncated Lines
 #+begin_src emacs-lisp
-  (global-display-line-numbers-mode 1) ;; Line numbers
-  (setq display-line-numbers-type 'relative) ;;Relative line numbers
-  (global-visual-line-mode t)
+(global-display-line-numbers-mode 1) ;; Line numbers
+(setq display-line-numbers-type 'relative) ;;Relative line numbers
+(global-visual-line-mode t)
 #+end_src
+
 ** Remove Startup Screen
 #+begin_src emacs-lisp
-  (setq inhibit-startup-message t)
+(setq inhibit-startup-message t)
 #+end_src
+
 ** Maximize windows by default
 #+begin_src emacs-lisp
 (set-frame-parameter (selected-frame) 'fullscreen 'maximized)
 (add-to-list 'default-frame-alist '(fullscreen . maximized))
 #+end_src
+
 ** Disable Bell and Dialog Boxes
 #+begin_src emacs-lisp
-  (setq ring-bell-function 'ignore)
-  (setq use-dialog-box nil) ;; Disable dialog boxes since they weren't working in Mac OSX
+(setq ring-bell-function 'ignore)
+(setq use-dialog-box nil) ;; Disable dialog boxes since they weren't working in Mac OSX
 #+end_src
+
 ** Set UTF-8 Encoding
 #+begin_src emacs-lisp
-  (setq locale-coding-system 'utf-8)
-  (set-terminal-coding-system 'utf-8)
-  (set-keyboard-coding-system 'utf-8)
-  (set-selection-coding-system 'utf-8)
-  (prefer-coding-system 'utf-8)
+(setq locale-coding-system 'utf-8)
+(set-terminal-coding-system 'utf-8)
+(set-keyboard-coding-system 'utf-8)
+(set-selection-coding-system 'utf-8)
+(prefer-coding-system 'utf-8)
 #+end_src
+
 ** Disable Backups and Auto-Saves
 #+begin_src emacs-lisp
-  (setq make-backup-files nil)
-  (setq auto-save-default nil)
+(setq make-backup-files nil)
+(setq auto-save-default nil)
 #+end_src
+
 ** Fix $PATH environment variable
 
 The issue is that due to the special way MacOS starts GUI programs a GUI Emacs does not inherit the environment variables from the shell configuration so Emacs will lack some important entries in $PATH, most notably /usr/local/bin/ where Homebrew, NPM and many other package managers put binaries in.
 
 The exec-path-from-shell works around this issue by extracting environment variables from a shell session and inject them into the environment of the running Emacs instance.
 #+begin_src emacs-lisp
-  (use-package exec-path-from-shell)
-  (exec-path-from-shell-initialize)
+(use-package exec-path-from-shell)
+(exec-path-from-shell-initialize)
 #+end_src
+
 * THEME
-** Doom-Spacegrey
-Doom-Spacegrey is part of the doom-themes package
+** Doom-One
+Doom-One is part of the doom-themes package
 #+begin_src emacs-lisp
-  (use-package doom-themes
-    :ensure t)
-  (setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
-	doom-themes-enable-italic t) ; if nil, italics is universally disabled
-  (load-theme 'doom-spacegrey t)
+(use-package doom-themes
+  :ensure t)
+(setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
+      doom-themes-enable-italic t) ; if nil, italics is universally disabled
+(load-theme 'doom-spacegrey t)
 #+end_src
+
 * FONTS
 ** Iosevka SS04 
 #+begin_src emacs-lisp
-  (set-face-attribute 'default nil
-		      :font "Iosevka SS04"
-		      :height 180
-		      :weight 'medium)
-  (set-face-attribute 'variable-pitch nil
-		      :font "Iosevka SS04"
-		      :height 180
-		      :weight 'bold)
-  (set-face-attribute 'fixed-pitch nil
-		      :font "Iosevka SS04"
-		      :height 180
-		      :weight 'medium)
-  ;; Makes commented text and keywords italics.
-  ;; This is working in emacsclient but not emacs.
-  ;; Your font must have an italic face available.
-  (set-face-attribute 'font-lock-comment-face nil
-		      :slant 'italic)
-  (set-face-attribute 'font-lock-keyword-face nil
-		      :slant 'italic)
-  ;; Needed if using emacsclient. Otherwise, your fonts will be smaller than expected.
-  (add-to-list 'default-frame-alist '(font . "Iosevka SS04-18"))
-  ;; changes certain keywords to symbols, such as lamda!
-  (setq global-prettify-symbols-mode t)
+(set-face-attribute 'default nil
+                    :font "Iosevka SS04"
+                    :height 180
+                    :weight 'medium)
+(set-face-attribute 'variable-pitch nil
+                    :font "Iosevka SS04"
+                    :height 180
+                    :weight 'medium)
+(set-face-attribute 'fixed-pitch nil
+                    :font "Iosevka SS04"
+                    :height 180
+                    :weight 'medium)
+;; Makes commented text and keywords italics.
+;; This is working in emacsclient but not emacs.
+;; Your font must have an italic face available.
+(set-face-attribute 'font-lock-comment-face nil
+                    :slant 'italic)
+(set-face-attribute 'font-lock-keyword-face nil
+                    :slant 'italic)
+;; Needed if using emacsclient. Otherwise, your fonts will be smaller than expected.
+(add-to-list 'default-frame-alist '(font . "Iosevka SS04-18"))
+;; changes certain keywords to symbols, such as lamda!
+(setq global-prettify-symbols-mode t)
 #+end_src
 
 * ORG MODE
+** Org Basic Configuration
+#+begin_src emacs-lisp
+(defun rec/org-mode-setup ()
+  (org-indent-mode)
+  (display-line-numbers-mode -1) ;; Line numbers
+  (variable-pitch-mode 1)
+  (visual-line-mode 1))
+
+(setq org-startup-folded t) ;; Fold Headings at startup
+
+(use-package org
+  :hook (org-mode . rec/org-mode-setup)
+  :config
+  (setq org-ellipsis " »"))
+#+end_src
+
 ** Org Bullets
 #+begin_src emacs-lisp
-  (use-package org-bullets)
+(use-package org-bullets)
 (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1)))
 #+end_src
+
+** Center Org Buffers
+#+begin_src emacs-lisp
+
+(defun rec/org-mode-visual-fill ()
+  (setq visual-fill-column-width 120
+        visual-fill-column-center-text t)
+  (visual-fill-column-mode 1))
+
+(use-package visual-fill-column
+  :hook (org-mode . rec/org-mode-visual-fill))
+
+#+end_src
+
 ** Source Code Block Tag Expansion (org-tempo)
 
 Org-tempo is a package that allows for '<s' followed by TAB to expand to a begin_src tag.  Other expansions available include:
@@ -167,13 +209,15 @@ Org-tempo is a package that allows for '<s' followed by TAB to expand to a begin
 (use-package org-tempo
   :ensure nil) ;; tell use-package not to try to install org-tempo since it's already there.
 #+end_src
+
 ** Source Code Syntax Highlighting
 #+begin_src emacs-lisp 
 (setq org-src-fontify-natively t
-    org-src-tab-acts-natively t
-    org-confirm-babel-evaluate nil
-    org-edit-src-content-indentation 0)
+      org-src-tab-acts-natively t
+      org-confirm-babel-evaluate nil
+      org-edit-src-content-indentation 0)
 #+end_src
+
 ** Table of Contents
 Toc-org helps you to have an up-to-date table of contents in org files without exporting (useful for README files on GitHub).  Use :TOC: to create the table.
 #+begin_src emacs-lisp
@@ -181,54 +225,64 @@ Toc-org helps you to have an up-to-date table of contents in org files without e
   :commands toc-org-enable
   :init (add-hook 'org-mode-hook 'toc-org-enable))
 #+end_src
+
 * EVIL MODE
 ** Evil Package
 #+begin_src emacs-lisp
-  (use-package evil
-    :ensure t
-    :init      ;; tweak evil's configuration before loading it
-    (setq evil-want-C-u-scroll t) ;; Ctrl-u to scroll up
-    (setq evil-want-C-i-jump nil) ;;TAB didn't work in the console (was bound to evil-jump-forward)
-    (setq evil-want-integration t) ;; This is optional since it's already set to t by default.
-    (setq evil-want-keybinding nil)
-    (setq evil-vsplit-window-right t)
-    (setq evil-split-window-below t)
-    (setq evil-undo-system 'undo-redo) ;;undo-redo comes standard with Emacs 28+
-    (evil-mode))
-  (use-package evil-collection
-    :after evil
-    :ensure t
-    :config
-    (setq evil-collection-mode-list '(dashboard dired ibuffer))
-    (evil-collection-init))
+(use-package evil
+  :ensure t
+  :init      ;; tweak evil's configuration before loading it
+  (setq evil-want-C-u-scroll t) ;; Ctrl-u to scroll up
+  (setq evil-want-C-i-jump nil) ;;TAB didn't work in the console (was bound to evil-jump-forward)
+  (setq evil-want-integration t) ;; This is optional since it's already set to t by default.
+  (setq evil-want-keybinding nil)
+  (setq evil-vsplit-window-right t)
+  (setq evil-split-window-below t)
+  (setq evil-undo-system 'undo-redo) ;;undo-redo comes standard with Emacs 28+
+  (evil-mode))
+(use-package evil-collection
+  :after evil
+  :ensure t
+  :config
+  (setq evil-collection-mode-list '(dashboard dired ibuffer))
+  (evil-collection-init))
 #+end_src
 
-** Evil-Commentary
+** Evil Multiple Cursors
+Multiple cursor support in Emacs+evil. It allows for selection and editing matches interactively, integrating iedit-mode into evil-mode with an attempt at sensible defaults.
+#+begin_src emacs-lisp 
+(use-package evil-mc)
+(global-evil-mc-mode  1) ;; enable
+#+end_src
+
+** Evil Commentary
 Package allowing us to use 'g-c-c' to comment and uncomment based on Commetary.vim.
 #+begin_src emacs-lisp
-  (use-package evil-commentary
-    :ensure t)
-  (evil-commentary-mode)
+(use-package evil-commentary
+  :ensure t)
+(evil-commentary-mode)
 #+end_src
 
 * COMPLETION FRAMEWORK (Vertico/Marginalia/Orderless/Consult/Embark)
 ** Vertico
 #+begin_src emacs-lisp
-  (use-package vertico
-    :ensure t
-    :init
-    (vertico-mode))
+(use-package vertico
+  :ensure t
+  :init
+  (vertico-mode))
 #+end_src
+
 ** Marginalia
 #+begin_src emacs-lisp
-  (use-package marginalia
-    :after vertico
-    :ensure t
-    :custom
-    (marginalia-annotators '(marginalia-annotators-heavy marginalia-annotators-light nil))
-    :init
-    (marginalia-mode))
+(use-package marginalia
+  :after vertico
+  :ensure t
+  :custom
+  (marginalia-annotators '(marginalia-annotators-heavy marginalia-annotators-light nil))
+  :init
+  (marginalia-mode))
 #+end_src
+
 ** Orderless
 #+begin_src emacs-lisp 
 (use-package orderless
@@ -236,62 +290,11 @@ Package allowing us to use 'g-c-c' to comment and uncomment based on Commetary.v
   :config
   (setq completion-styles '(orderless)))
 #+end_src
+
 ** Consult
 #+begin_src emacs-lisp 
 ;; Example configuration for Consult
 (use-package consult
-  ;; Replace bindings. Lazily loaded due by `use-package'.
-  :bind (;; C-c bindings (mode-specific-map)
-         ("C-c h" . consult-history)
-         ("C-c m" . consult-mode-command)
-         ("C-c k" . consult-kmacro)
-         ;; C-x bindings (ctl-x-map)
-         ("C-x M-:" . consult-complex-command)     ;; orig. repeat-complex-command
-         ("C-x b" . consult-buffer)                ;; orig. switch-to-buffer
-         ("C-x 4 b" . consult-buffer-other-window) ;; orig. switch-to-buffer-other-window
-         ("C-x 5 b" . consult-buffer-other-frame)  ;; orig. switch-to-buffer-other-frame
-         ("C-x r b" . consult-bookmark)            ;; orig. bookmark-jump
-         ("C-x p b" . consult-project-buffer)      ;; orig. project-switch-to-buffer
-         ;; Custom M-# bindings for fast register access
-         ("M-#" . consult-register-load)
-         ("M-'" . consult-register-store)          ;; orig. abbrev-prefix-mark (unrelated)
-         ("C-M-#" . consult-register)
-         ;; Other custom bindings
-         ("M-y" . consult-yank-pop)                ;; orig. yank-pop
-         ("<help> a" . consult-apropos)            ;; orig. apropos-command
-         ;; M-g bindings (goto-map)
-         ("M-g e" . consult-compile-error)
-         ("M-g f" . consult-flymake)               ;; Alternative: consult-flycheck
-         ("M-g g" . consult-goto-line)             ;; orig. goto-line
-         ("M-g M-g" . consult-goto-line)           ;; orig. goto-line
-         ("M-g o" . consult-outline)               ;; Alternative: consult-org-heading
-         ("M-g m" . consult-mark)
-         ("M-g k" . consult-global-mark)
-         ("M-g i" . consult-imenu)
-         ("M-g I" . consult-imenu-multi)
-         ;; M-s bindings (search-map)
-         ("M-s d" . consult-find)
-         ("M-s D" . consult-locate)
-         ("M-s g" . consult-grep)
-         ("M-s G" . consult-git-grep)
-         ("M-s r" . consult-ripgrep)
-         ("M-s l" . consult-line)
-         ("M-s L" . consult-line-multi)
-         ("M-s m" . consult-multi-occur)
-         ("M-s k" . consult-keep-lines)
-         ("M-s u" . consult-focus-lines)
-         ;; Isearch integration
-         ("M-s e" . consult-isearch-history)
-         :map isearch-mode-map
-         ("M-e" . consult-isearch-history)         ;; orig. isearch-edit-string
-         ("M-s e" . consult-isearch-history)       ;; orig. isearch-edit-string
-         ("M-s l" . consult-line)                  ;; needed by consult-line to detect isearch
-         ("M-s L" . consult-line-multi)            ;; needed by consult-line to detect isearch
-         ;; Minibuffer history
-         :map minibuffer-local-map
-         ("M-s" . consult-history)                 ;; orig. next-matching-history-element
-         ("M-r" . consult-history))                ;; orig. previous-matching-history-element
-
   ;; Enable automatic preview at point in the *Completions* buffer. This is
   ;; relevant when you use the default completion UI.
   :hook (completion-list-mode . consult-preview-at-point-mode)
@@ -356,8 +359,9 @@ Package allowing us to use 'g-c-c' to comment and uncomment based on Commetary.v
   ;; (setq consult-project-function (lambda (_) (vc-root-dir)))
   ;;;; 4. locate-dominating-file
   ;; (setq consult-project-function (lambda (_) (locate-dominating-file "." ".git")))
-)
+  )
 #+end_src
+
 * LSP AND SYNTAX CHECKING PACKAGES
 ** LSP-MODE
 ** LSP-UI
@@ -377,207 +381,233 @@ Package allowing us to use 'g-c-c' to comment and uncomment based on Commetary.v
 (setq centaur-tabs-height 32)
 (setq centaur-tabs-set-icons t)
 #+end_src
+
 ** Doom Modeline
 Modeline package imported from Doom Emacs.
 #+begin_src emacs-lisp
-  (use-package doom-modeline
-    :ensure t
-    :init (doom-modeline-mode 1)
-    :custom ((doom-modeline-height 15)))
+(use-package doom-modeline
+  :ensure t
+  :init (doom-modeline-mode 1)
+  :custom ((doom-modeline-height 15)))
 #+end_src
 
 ** Dashboard
 #+begin_src emacs-lisp
-  (use-package dashboard
-    :ensure t
-    :config
-    (dashboard-setup-startup-hook)
-    ;; (setq dashboard-startup-banner "")
-    (setq dashboard-items '((recents  . 5)
-			    (projects . 5)))
-    (setq dashboard-banner-logo-title "emacs"))
-  (setq dashboard-startup-banner "~/.emacs.d/img/Emacs.png")  ;; use custom image as banner
-  (setq dashboard-center-content t)
-  (setq initial-buffer-choice (lambda () (get-buffer "*dashboard*")))
+(use-package dashboard
+  :ensure t
+  :config
+  (dashboard-setup-startup-hook)
+  ;; (setq dashboard-startup-banner "")
+  (setq dashboard-items '((recents  . 5)
+                          (projects . 5)))
+  (setq dashboard-banner-logo-title "emacs"))
+(setq dashboard-startup-banner "~/.emacs.d/img/Emacs.png")  ;; use custom image as banner
+(setq dashboard-center-content t)
+(setq initial-buffer-choice (lambda () (get-buffer "*dashboard*")))
 #+end_src
+
 ** All the Icons
 #+begin_src emacs-lisp
-  (use-package all-the-icons
-    :ensure t
-    :init)
+(use-package all-the-icons
+  :ensure t
+  :init)
 
-  (use-package all-the-icons-dired
-    :ensure t
-    :init (add-hook 'dired-mode-hook 'all-the-icons-dired-mode))
+(use-package all-the-icons-dired
+  :ensure t
+  :init (add-hook 'dired-mode-hook 'all-the-icons-dired-mode))
 
-  (use-package all-the-icons-ibuffer
-    :ensure t
-    :init (all-the-icons-ibuffer-mode 1))
+(use-package all-the-icons-ibuffer
+  :ensure t
+  :init (all-the-icons-ibuffer-mode 1))
 #+end_src
+
 ** Which Key
 #+begin_src emacs-lisp
-  (use-package which-key
-    :ensure t
-    :init
-    (setq which-key-side-window-location 'bottom
-	  which-key-sort-order #'which-key-key-order-alpha
-	  which-key-sort-uppercase-first nil
-	  which-key-add-column-padding 1
-	  which-key-max-display-columns nil
-	  which-key-min-display-lines 6
-	  which-key-side-window-slot -10
-	  which-key-side-window-max-height 0.25
-	  which-key-idle-delay 0.8
-	  which-key-max-description-length 25
-	  which-key-allow-imprecise-window-fit t
-	  which-key-separator " → " ))
-  (which-key-mode)
+(use-package which-key
+  :ensure t
+  :init
+  (setq which-key-side-window-location 'bottom
+        which-key-sort-order #'which-key-key-order-alpha
+        which-key-sort-uppercase-first nil
+        which-key-add-column-padding 1
+        which-key-max-display-columns nil
+        which-key-min-display-lines 6
+        which-key-side-window-slot -10
+        which-key-side-window-max-height 0.25
+        which-key-idle-delay 0.8
+        which-key-max-description-length 25
+        which-key-allow-imprecise-window-fit t
+        which-key-separator " → " ))
+(which-key-mode)
 #+end_src
  
 ** Projectile
 #+begin_src emacs-lisp
-  (use-package projectile
-    :ensure t
-    :config
-    (projectile-global-mode 1))
+(use-package projectile
+  :ensure t
+  :config
+  (projectile-global-mode 1))
 #+end_src
+
 ** Rainbow Mode
 Highlights hexadecimal color values.
 #+begin_src emacs-lisp
-  (use-package rainbow-mode
-    :ensure t)
-  (define-globalized-minor-mode global-rainbow-mode rainbow-mode
-    (lambda () (rainbow-mode 1)))
-  (global-rainbow-mode 1 )
+(use-package rainbow-mode
+  :ensure t)
+(define-globalized-minor-mode global-rainbow-mode rainbow-mode
+  (lambda () (rainbow-mode 1)))
+(global-rainbow-mode 1 )
 #+end_src
 
 ** Rainbow Delimeter
 Colors paranethesis and other delimeters.
 #+begin_src emacs-lisp
-  (use-package rainbow-delimiters
-    :ensure t
-    :init
-    (rainbow-delimiters-mode 1))
+(use-package rainbow-delimiters
+  :ensure t
+  :init
+  (rainbow-delimiters-mode 1))
 #+end_src
+
 ** Vterm
 Vterm is a terminal emulator within Emacs.  The ‘shell-file-name’ setting sets the shell to be used in M-x shell, M-x term, M-x ansi-term and M-x vterm.  By default, the shell is set to ‘fish’.
 
--------Emacs 27----------
+~
 cd .emacs.d/elpa/vterm-xxxxxx
 mkdir -p build
 cd build 
 cmake .. 
 make
--------------------------- 
+~
 
 #+begin_src emacs-lisp
-  (use-package vterm
-    :custom  (vterm-install t))
-  (setq shell-file-name "/usr/local/bin/fish"
-	vterm-max-scrollback 5000)
-  (evil-set-initial-state 'vterm-mode 'emacs) ;;Disable Evil Mode in Vterm
+(use-package vterm
+  :custom  (vterm-install t))
+(setq shell-file-name "/usr/local/bin/fish"
+      vterm-max-scrollback 5000)
+(evil-set-initial-state 'vterm-mode 'emacs) ;;Disable Evil Mode in Vterm
 #+end_src
 
 Open Vterm as a pop-up window.
 #+begin_src emacs-lisp
-  (defun my/vterm-toggle ())
+(defun my/vterm-toggle ())
 #+end_src
+
 * KEYCHORD
 ** Installing the key-chord package
 #+begin_src emacs-lisp
-  (use-package key-chord
-    :ensure t)
+(use-package key-chord
+  :ensure t)
 #+end_src
 
 ** Set `j-k` to `ESC`.
 #+begin_src emacs-lisp
-  ;;Exit insert mode by pressing j and then k quickly
-  (setq key-chord-two-keys-delay 0.1)
-  (key-chord-define evil-insert-state-map "jk" 'evil-normal-state)
-  (key-chord-mode 1)
+;;Exit insert mode by pressing j and then k quickly
+(setq key-chord-two-keys-delay 0.1)
+(key-chord-define evil-insert-state-map "jk" 'evil-normal-state)
+(key-chord-mode 1)
 #+end_src
 
 * GENERAL KEYBINDINGS
 ** Installing General.el
 #+begin_src emacs-lisp
-  (use-package general
-    :ensure t
-    :config
-    (general-evil-setup t))
+(use-package general
+  :ensure t
+  :config
+  (general-evil-setup t))
 #+end_src
+
 ** Essential Keybindings
 #+begin_src emacs-lisp
-  (global-set-key (kbd "<escape>") 'keyboard-escape-quit) ;; ESC cancels all
-  (define-key evil-normal-state-map "u" 'undo)
-  (define-key evil-normal-state-map (kbd "C-r") 'undo-redo)
-  ;; (global-set-key (kbd "S-k") 'helpful-at-point) ;; 
+(global-set-key (kbd "<escape>") 'keyboard-escape-quit) ;; ESC cancels all
+(define-key evil-normal-state-map "u" 'undo)
+(define-key evil-normal-state-map (kbd "C-r") 'undo-redo)
+;; (global-set-key (kbd "S-k") 'helpful-at-point) ;; 
 
-  (nvmap :keymaps 'override :prefix "SPC"
-    "SPC"   '(execute-extended-command :which-key "M-x")
-    "c c"   '(compile :which-key "Compile")
-    "c C"   '(recompile :which-key "Recompile")
-    "h r r" '((lambda () (interactive) (load-file "~/.emacs.d/init.el")) :which-key "Reload emacs config")
-    "t t"   '(toggle-truncate-lines :which-key "Toggle truncate lines"))
+(nvmap :keymaps 'override :prefix "SPC"
+  "SPC"   '(execute-extended-command :which-key "M-x")
+  "h"     '(:which-key "Help")
+  "h h"   '(consult-apropos :which-key "Apropos")
+  "h r r" '((lambda () (interactive) (load-file "~/.emacs.d/init.el")) :which-key "Reload emacs config"))
 #+end_src
+
+** Search and Goto
+#+begin_src emacs-lisp
+(nvmap :keymaps 'override :prefix "SPC"
+  "s"   '(:which-key "Search")
+  "s g" '(consult-git-grep :which-key "Grep Search Git")
+  "s i" '(consult-imenu :which-key "Search item current buffer")
+  "s l" '(consult-goto-line :which-key "Goto Line")
+  "s r" '(consult-ripgrep :which-key "Ripgrep")
+  "s s" '(consult-line :which-key "Search current buffer")
+  )
+#+end_src
+
 ** Files
 #+begin_src emacs-lisp
-  (nvmap :states '(normal visual) :keymaps 'override :prefix "SPC"
-    "f f"   '(find-file :which-key "Find file")
-    "f r"   '(consult-recent-file :which-key "Recent files")
-    "f s"   '(save-buffer :which-key "Save file")
-    "f u"   '(sudo-edit-find-file :which-key "Sudo find file")
-    "f y"   '(dt/show-and-copy-buffer-path :which-key "Yank file path")
-    "f C"   '(copy-file :which-key "Copy file")
-    "f D"   '(delete-file :which-key "Delete file")
-    "f R"   '(rename-file :which-key "Rename file")
-    "f S"   '(write-file :which-key "Save file as...")
-    "f U"   '(sudo-edit :which-key "Sudo edit file"))
+(nvmap :states '(normal visual) :keymaps 'override :prefix "SPC"
+  "f"     '(:which-key "Files")
+  "f f"   '(find-file :which-key "Find file")
+  "f r"   '(consult-recent-file :which-key "Recent files")
+  "f s"   '(save-buffer :which-key "Save file")
+  "f u"   '(sudo-edit-find-file :which-key "Sudo find file")
+  "f y"   '(dt/show-and-copy-buffer-path :which-key "Yank file path")
+  "f C"   '(copy-file :which-key "Copy file")
+  "f D"   '(delete-file :which-key "Delete file")
+  "f R"   '(rename-file :which-key "Rename file")
+  "f S"   '(write-file :which-key "Save file as...")
+  "f U"   '(sudo-edit :which-key "Sudo edit file"))
 #+end_src
+
 ** Splits and Windows
 #+begin_src emacs-lisp
-  (winner-mode 1)
-  (nvmap :prefix "SPC"
-    ;; Window splits
-    "w c"   '(evil-window-delete :which-key "Close window")
-    "w n"   '(evil-window-new :which-key "New window")
-    "w s"   '(evil-window-split :which-key "Horizontal split window")
-    "w v"   '(evil-window-vsplit :which-key "Vertical split window")
-    ;; Window motions
-    "w h"   '(evil-window-left :which-key "Window left")
-    "w j"   '(evil-window-down :which-key "Window down")
-    "w k"   '(evil-window-up :which-key "Window up")
-    "w l"   '(evil-window-right :which-key "Window right")
-    "w w"   '(evil-window-next :which-key "Goto next window")
-    ;; winner mode
-    "w <left>"  '(winner-undo :which-key "Winner undo")
-    "w <right>" '(winner-redo :which-key "Winner redo"))
+(winner-mode 1)
+(nvmap :prefix "SPC"
+  ;; Window splits
+  "w"     '(:which-key"Windows")
+  "w c"   '(evil-window-delete :which-key "Close window")
+  "w n"   '(evil-window-new :which-key "New window")
+  "w s"   '(evil-window-split :which-key "Horizontal split window")
+  "w v"   '(evil-window-vsplit :which-key "Vertical split window")
+  ;; Window motions
+  "w h"   '(evil-window-left :which-key "Window left")
+  "w j"   '(evil-window-down :which-key "Window down")
+  "w k"   '(evil-window-up :which-key "Window up")
+  "w l"   '(evil-window-right :which-key "Window right")
+  "w w"   '(evil-window-next :which-key "Goto next window")
+  ;; winner mode
+  "w <left>"  '(winner-undo :which-key "Winner undo")
+  "w <right>" '(winner-redo :which-key "Winner redo"))
 #+end_src
+
 ** Buffers and Bookmarks
 #+begin_src emacs-lisp
-  (nvmap :prefix "SPC"
-    "b b"   '(consult-buffer :which-key "Ibuffer")
-    "b c"   '(clone-indirect-buffer-other-window :which-key "Clone indirect buffer other window")
-    "b k"   '(kill-current-buffer :which-key "Kill current buffer")
-    "b n"   '(next-buffer :which-key "Next buffer")
-    "b p"   '(previous-buffer :which-key "Previous buffer")
-    "b B"   '(ibuffer-list-buffers :which-key "Ibuffer list buffers")
-    "b K"   '(kill-buffer :which-key "Kill buffer"))
+(nvmap :prefix "SPC"
+  "b"     '(:which-key "Buffers")
+  "b b"   '(consult-buffer :which-key "Ibuffer")
+  "b c"   '(clone-indirect-buffer-other-window :which-key "Clone indirect buffer other window")
+  "b k"   '(kill-current-buffer :which-key "Kill current buffer")
+  "b n"   '(next-buffer :which-key "Next buffer")
+  "b p"   '(previous-buffer :which-key "Previous buffer")
+  "b B"   '(ibuffer-list-buffers :which-key "Ibuffer list buffers")
+  "b K"   '(kill-buffer :which-key "Kill buffer"))
 #+end_src 
+
 * MISC SETTINGS
 ** Electric Pair Mode
 Electric Pair mode  is a global minor mode that provides a way to easily insert matching delimiters: parentheses, braces, brackets, etc.
 #+begin_src emacs-lisp
-  (setq electric-pair-pairs '(
-			      (?\{ . ?\})
-			      (?\( . ?\))
-			      (?\[ . ?\])
-			      (?\" . ?\")
-			      ))
-  (electric-pair-mode t)
+(setq electric-pair-pairs '(
+                            (?\{ . ?\})
+                            (?\( . ?\))
+                            (?\[ . ?\])
+                            (?\" . ?\")
+                            ))
+(electric-pair-mode t)
 #+end_src
+
 * RUNTIME PERFORMANCE
 Dial the GC threshold back down so that garbage collection happens more frequently but in less time.
 #+begin_src emacs-lisp
-  ;; Make gc pauses faster by decreasing the threshold.
-  (setq gc-cons-threshold (* 2 1000 1000))
+;; Make gc pauses faster by decreasing the threshold.
+(setq gc-cons-threshold (* 2 1000 1000))
 #+end_src
