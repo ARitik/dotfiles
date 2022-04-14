@@ -1,7 +1,7 @@
 #+TITLE: Ritik's Emacs Config
 #+AUTHOR: Ambadi Ritik Krishnan
 
-* PACKAGE MANAGEMENT
+* Package Management
 Source packages from the MELPA repository and install and manage them using `use-package`.
 ** Setup Package.el to work with MELPA
 #+begin_src emacs-lisp
@@ -20,7 +20,7 @@ Source packages from the MELPA repository and install and manage them using `use
 (setq use-package-always-ensure t)
 #+end_src
 
-* STARTUP PERFORMANCE
+* Startup Performance
 ** Garbage Collection
 #+begin_src emacs-lisp
 ;; Using garbage magic hack.
@@ -47,16 +47,16 @@ Source packages from the MELPA repository and install and manage them using `use
 ** Native Compile
 #+begin_src emacs-lisp
 ;; Silence compiler warnings as they can be pretty disruptive
-(if (boundp 'comp-deferred-compilation)
-    (setq comp-deferred-compilation nil)
-  (setq native-comp-deferred-compilation nil))
+;; (if (boundp 'comp-deferred-compilation)
+;;     (setq comp-deferred-compilation nil)
+;;   (setq native-comp-deferred-compilation nil))
 ;; In noninteractive sessions, prioritize non-byte-compiled source files to
 ;; prevent the use of stale byte-code. Otherwise, it saves us a little IO time
 ;; to skip the mtime checks on every *.elc file.
-(setq load-prefer-newer noninteractive)
+;; (setq load-prefer-newer noninteractive)
 #+end_src
 
-* GRAPHICAL USER INTERFACE SETTINGS AND TWEAKS
+* Graphical User Interface Settings And Tweaks
 ** Disable Menubar, Toolbars and Scrollbars
 #+begin_src emacs-lisp
 (menu-bar-mode -1)
@@ -66,7 +66,12 @@ Source packages from the MELPA repository and install and manage them using `use
 
 ** Display Line Numbers and Truncated Lines
 #+begin_src emacs-lisp
-(global-display-line-numbers-mode 1) ;; Line numbers
+(dolist (mode '(org-mode-hook
+                vterm-mode-hook))
+
+(add-hook mode (lambda () (display-line-numbers-mode 0))))
+
+(global-display-line-numbers-mode t) ;; Line numbers
 (setq display-line-numbers-type 'relative) ;;Relative line numbers
 (global-visual-line-mode t)
 #+end_src
@@ -113,18 +118,18 @@ The exec-path-from-shell works around this issue by extracting environment varia
 (exec-path-from-shell-initialize)
 #+end_src
 
-* THEME
-** Doom-One
-Doom-One is part of the doom-themes package
+* Theme
+** Doom-Zenburn
+Doom-Zenburn is part of the doom-themes package
 #+begin_src emacs-lisp
 (use-package doom-themes
   :ensure t)
 (setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
       doom-themes-enable-italic t) ; if nil, italics is universally disabled
-(load-theme 'doom-spacegrey t)
+(load-theme 'doom-zenburn t)
 #+end_src
 
-* FONTS
+* Fonts
 ** Iosevka SS04 
 #+begin_src emacs-lisp
 (set-face-attribute 'default nil
@@ -152,14 +157,14 @@ Doom-One is part of the doom-themes package
 (setq global-prettify-symbols-mode t)
 #+end_src
 
-* ORG MODE
+* Org Mode
 ** Org Basic Configuration
 #+begin_src emacs-lisp
 (defun rec/org-mode-setup ()
   (org-indent-mode)
-  (display-line-numbers-mode -1) ;; Line numbers
   (variable-pitch-mode 1)
-  (visual-line-mode 1))
+  (visual-line-mode 1)
+  )
 
 (setq org-startup-folded t) ;; Fold Headings at startup
 
@@ -169,15 +174,9 @@ Doom-One is part of the doom-themes package
   (setq org-ellipsis " »"))
 #+end_src
 
-** Org Bullets
-#+begin_src emacs-lisp
-(use-package org-bullets)
-(add-hook 'org-mode-hook (lambda () (org-bullets-mode 1)))
-#+end_src
-
 ** Center Org Buffers
-#+begin_src emacs-lisp
 
+#+begin_src emacs-lisp
 (defun rec/org-mode-visual-fill ()
   (setq visual-fill-column-width 120
         visual-fill-column-center-text t)
@@ -185,7 +184,12 @@ Doom-One is part of the doom-themes package
 
 (use-package visual-fill-column
   :hook (org-mode . rec/org-mode-visual-fill))
+#+end_src
 
+** Org Bullets
+#+begin_src emacs-lisp
+(use-package org-bullets)
+(add-hook 'org-mode-hook (lambda () (org-bullets-mode 1)))
 #+end_src
 
 ** Source Code Block Tag Expansion (org-tempo)
@@ -221,12 +225,12 @@ Org-tempo is a package that allows for '<s' followed by TAB to expand to a begin
 ** Table of Contents
 Toc-org helps you to have an up-to-date table of contents in org files without exporting (useful for README files on GitHub).  Use :TOC: to create the table.
 #+begin_src emacs-lisp
-(use-package toc-org
-  :commands toc-org-enable
-  :init (add-hook 'org-mode-hook 'toc-org-enable))
+;; (use-package toc-org
+;;   :commands toc-org-enable
+;;   :init (add-hook 'org-mode-hook 'toc-org-enable))
 #+end_src
 
-* EVIL MODE
+* Evil Mode
 ** Evil Package
 #+begin_src emacs-lisp
 (use-package evil
@@ -263,7 +267,7 @@ Package allowing us to use 'g-c-c' to comment and uncomment based on Commetary.v
 (evil-commentary-mode)
 #+end_src
 
-* COMPLETION FRAMEWORK (Vertico/Marginalia/Orderless/Consult/Embark)
+* Completion Framework (Vertico/Marginalia/Orderless/Consult/Embark)
 ** Vertico
 #+begin_src emacs-lisp
 (use-package vertico
@@ -362,13 +366,84 @@ Package allowing us to use 'g-c-c' to comment and uncomment based on Commetary.v
   )
 #+end_src
 
-* LSP AND SYNTAX CHECKING PACKAGES
-** LSP-MODE
-** LSP-UI
+* Language Support
+** LSP Setup
+*** Lsp Mode
+#+begin_src emacs-lisp
+(use-package lsp-mode
+  :commands (lsp lsp-deferred)
+  :hook (lsp-mode . efs/lsp-mode-setup)
+  :init
+  (setq lsp-keymap-prefix "C-c l")  ;; Or 'C-l', 's-l'
+  :config
+  (lsp-enable-which-key-integration t))
+#+end_src
+
+*** Lsp UI
+#+begin_src emacs-lisp 
+(use-package lsp-ui
+  :ensure
+  :commands lsp-ui-mode
+  :custom
+  (lsp-ui-peek-always-show t)
+  (lsp-ui-sideline-show-hover t)
+  (lsp-ui-doc-enable nil))
+#+end_src
+
+*** Company
+#+begin_src emacs-lisp
+(use-package company
+  :custom
+  (company-idle-delay 0.5) ;; how long to wait until popup
+  ;; (company-begin-commands nil) ;; uncomment to disable popup
+  :bind
+  (:map company-active-map
+        ("C-n". company-select-next)
+        ("C-p". company-select-previous)
+        ("M-<". company-select-first)
+        ("M->". company-select-last))
+  (:map company-mode-map
+        ("<tab>". tab-indent-or-complete)
+        ("TAB". tab-indent-or-complete))
+  )
+#+end_src
+
 ** Flycheck
-** Company 
-** Language Support
-* ESSENTIAL PACKAGES
+Inline Errors
+#+begin_src emacs-lisp
+(use-package flycheck)
+#+end_src
+
+** Languages
+**** Rustic (Rust)
+[[https://robert.kra.hn/posts/2021-02-07_rust-with-emacs/][Reference Article]]
+
+Rustic is powered by ~rust-analyzer~ in this configuration. To install it,
+
+#+begin_src bash
+git clone https://github.com/rust-analyzer/rust-analyzer.git
+cd rust-analyzer
+cargo xtask install --server # will install rust-analyzer into $HOME/.cargo/bin
+#+end_src>
+
+We change ~rustic-lsp-server~ to use ~rust-analyzer~ instead of ~rls~.
+
+#+begin_src emacs-lisp 
+(use-package rustic)
+(setq rustic-lsp-server 'rust-analyzer)
+(setq rustic-analyzer-command '("~/.cargo/bin/rust-analyzer"))
+#+end_src
+
+**** Python (PyRight)
+#+begin_src emacs-lisp
+#+end_src
+**** CSS
+
+This Server supports automatic install. Install this language server with M-x lsp-install-server RET css-ls RET.
+
+~npm install -g vscode-css-languageserver-bin~
+
+* Essential Packages
 ** Centaur Tabs
 #+begin_src emacs-lisp
 (use-package centaur-tabs
@@ -404,6 +479,13 @@ Modeline package imported from Doom Emacs.
 (setq dashboard-startup-banner "~/.emacs.d/img/Emacs.png")  ;; use custom image as banner
 (setq dashboard-center-content t)
 (setq initial-buffer-choice (lambda () (get-buffer "*dashboard*")))
+#+end_src
+
+** Dumb Jump
+#+begin_src emacs-lisp 
+;; (use-package dumb-jump)
+;; (add-hook 'xref-backend-functions #'dumb-jump-xref-activate)
+;; (setq xref-show-definitions-function #'xref-show-definitions-completing-read)
 #+end_src
 
 ** All the Icons
@@ -492,7 +574,7 @@ Open Vterm as a pop-up window.
 (defun my/vterm-toggle ())
 #+end_src
 
-* KEYCHORD
+* Keychord
 ** Installing the key-chord package
 #+begin_src emacs-lisp
 (use-package key-chord
@@ -507,7 +589,7 @@ Open Vterm as a pop-up window.
 (key-chord-mode 1)
 #+end_src
 
-* GENERAL KEYBINDINGS
+* General Keybindings
 ** Installing General.el
 #+begin_src emacs-lisp
 (use-package general
@@ -592,7 +674,7 @@ Open Vterm as a pop-up window.
   "b K"   '(kill-buffer :which-key "Kill buffer"))
 #+end_src 
 
-* MISC SETTINGS
+* Misc Settings
 ** Electric Pair Mode
 Electric Pair mode  is a global minor mode that provides a way to easily insert matching delimiters: parentheses, braces, brackets, etc.
 #+begin_src emacs-lisp
@@ -605,8 +687,8 @@ Electric Pair mode  is a global minor mode that provides a way to easily insert 
 (electric-pair-mode t)
 #+end_src
 
-* RUNTIME PERFORMANCE
-Dial the GC threshold back down so that garbage collection happens more frequently but in less time.
+* Runtime Performance
+dial the GC threshold back down so that garbage collection happens more frequently but in less time.
 #+begin_src emacs-lisp
 ;; Make gc pauses faster by decreasing the threshold.
 (setq gc-cons-threshold (* 2 1000 1000))
