@@ -35,6 +35,8 @@ brew "neovim"
 brew "node"
 # Manage multiple Node.js versions
 brew "nvm"
+# Python version management
+brew "pyenv"
 # Search tool like grep and The Silver Searcher
 brew "ripgrep"
 # Cross-shell prompt for astronauts
@@ -51,6 +53,10 @@ cask "font-iosevka-nerd-font"
 cask "font-iosevka-ss04"
 # Keyboard customizer
 cask "karabiner-elements"
+# File archiver
+cask "keka"
+# Full TeX Live distribution with GUI applications
+cask "mactex"
 # Control your tools with a few keystrokes
 cask "raycast"
 # Move and resize windows using keyboard shortcuts or snap areas
